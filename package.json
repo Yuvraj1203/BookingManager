@@ -7,13 +7,28 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "ios:clean": "cd ios && bundle exec pod install && cd .."
   },
   "dependencies": {
+    "@callstack/liquid-glass": "^0.8.0",
+    "@d11/react-native-fast-image": "^8.13.0",
+    "@react-native-vector-icons/material-design-icons": "^13.1.2",
+    "@react-navigation/bottom-tabs": "^8.0.0-alpha.39",
+    "@react-navigation/drawer": "^8.0.0-alpha.40",
+    "@react-navigation/native": "^8.0.0-alpha.33",
+    "@react-navigation/native-stack": "^8.0.0-alpha.40",
     "react": "19.2.3",
     "react-native": "0.86.0",
-    "@react-native/new-app-screen": "0.86.0",
-    "react-native-safe-area-context": "^5.5.2"
+    "react-native-gesture-handler": "^3.0.2",
+    "react-native-mmkv": "^4.3.1",
+    "react-native-nitro-modules": "^0.35.9",
+    "react-native-paper": "^5.15.3",
+    "react-native-reanimated": "^4.4.1",
+    "react-native-safe-area-context": "^5.8.0",
+    "react-native-screens": "^4.25.2",
+    "react-native-worklets": "^0.9.2",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -29,6 +44,7 @@
     "@types/jest": "^29.5.13",
     "@types/react": "^19.2.0",
     "@types/react-test-renderer": "^19.1.0",
+    "babel-plugin-module-resolver": "^5.0.3",
     "eslint": "^8.19.0",
     "jest": "^29.6.3",
     "prettier": "2.8.8",
