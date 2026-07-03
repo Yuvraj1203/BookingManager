@@ -12,7 +12,7 @@ type Props = {
 
 export function SafeScreen({ top = true, bottom = true, ...props }: Props) {
   const theme = useTheme(); // theme
-  //   const insets = useSafeAreaInsets(); // Handle status/navigation bar safely
+  // const insets = useSafeAreaInsets(); // Handle status/navigation bar safely
   const styles = makeStyles(theme); // access StylesSheet with theme implemented
 
   const edges: Array<'top' | 'bottom' | 'left' | 'right'> = ['left', 'right'];

@@ -1,5 +1,5 @@
-import {Platform} from 'react-native';
-import {MD3Type} from 'react-native-paper/lib/typescript/types';
+import { Platform } from 'react-native';
+import { MD3Type } from 'react-native-paper/lib/typescript/types';
 
 export const CustomFonts = {
   Regular: 'Quicksand-SemiBold',
@@ -51,7 +51,7 @@ export const _fontConfig = {
   headlineLarge: {
     fontFamily: CustomFonts.Bold,
     fontSize: 32,
-    fontWeight: '400',
+    fontWeight: '600',
     letterSpacing: 0,
     lineHeight: 40,
   } as MD3Type,
@@ -99,7 +99,7 @@ export const _fontConfig = {
   labelLarge: {
     fontFamily: CustomFonts.Bold,
     fontSize: 14,
-    fontWeight: '400',
+    fontWeight: Platform.OS === 'ios' ? 'bold' : '600',
     letterSpacing: 0,
     lineHeight: 20,
   } as MD3Type,

@@ -2,7 +2,13 @@ import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import FastImage, { ImageStyle } from '@d11/react-native-fast-image';
 import React, { useState } from 'react';
-import { ActivityIndicator, StyleProp, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  ColorValue,
+  StyleProp,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 export enum ImageType {
   png = 'png',
@@ -19,7 +25,7 @@ export enum ResizeModeType {
 export type CustomImageProps = {
   source: any; // Accepts require() for local images or a URI for remote images
   errorSource?: any;
-  color?: string; // Optional tint color
+  color?: string | ColorValue; // Optional tint color
   fillColor?: string; // Optional tint color
   style?: StyleProp<ImageStyle>; // Unified style prop for both SVG and PNG
   type?: ImageType;

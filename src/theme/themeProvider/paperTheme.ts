@@ -55,8 +55,6 @@ const themeDestructure = () => {
       ...DefaultThemeLight.colors,
       ...NavigationLightTheme.colors,
       ...Colors.light,
-      primary: 'tomato',
-      secondary: 'yellow',
 
       gradientColorLevel1: '#FBFCFD00', // custom color
       gradientColorLevel2: '#FBFCFD6B', // custom color
@@ -105,8 +103,6 @@ const themeDestructure = () => {
       ...DefaultThemeDark.colors,
       ...NavigationDarkTheme.colors,
       ...Colors.dark,
-      primary: 'tomato',
-      secondary: 'yellow',
 
       gradientColorLevel1: '#191C1D00', // custom color
       gradientColorLevel2: '#191C1D71', // custom color
