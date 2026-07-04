@@ -1,4 +1,4 @@
-import { SplashScreen } from '@/screens';
+import { AddBooking, SplashScreen } from '@/screens';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { DrawerRoute } from './drawerRoute';
 import { RootStackParamList } from './types';
@@ -20,6 +20,15 @@ const RootNavigator = () => {
         }}
       />
       {/* <RootStack.Screen name="Profile" component={Profile} /> */}
+      <RootStack.Screen
+        name="AddBooking"
+        component={AddBooking}
+        options={{
+          presentation: 'formSheet',
+          headerShown: true,
+          sheetAllowedDetents: 'fitToContents',
+        }}
+      />
     </RootStack.Navigator>
   );
 };

@@ -1,3 +1,4 @@
+export * from './addBooking/addBooking';
 export * from './bookings/bookings';
 export * from './bottomTabs/bottomTabs';
 export * from './dashboard/dashboard';

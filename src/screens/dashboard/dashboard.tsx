@@ -2,6 +2,7 @@ import { ButtonIconsProps, CustomButton, SafeScreen, Tap } from '@/components';
 import { useAppLanguageStore } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { useAppNavigation } from '@/utils/navigationUtils';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { DashboardCard } from './dashboardCard';
@@ -15,6 +16,9 @@ export const Dashboard = () => {
 
   /** for tranlations */
   const { t } = useTranslation();
+
+  /** for navigation */
+  const navigation = useAppNavigation();
 
   const setLang = useAppLanguageStore(state => state.changeAppLanguage);
 
@@ -86,7 +90,10 @@ export const Dashboard = () => {
         </View>
       </View>
 
-      <CustomButton iconElement={buttonPlus}>
+      <CustomButton
+        onPress={() => navigation.navigate('AddBooking')}
+        iconElement={buttonPlus}
+      >
         {t('QuickAddBooking')}
       </CustomButton>
     </SafeScreen>
@@ -125,5 +132,6 @@ const makeStyle = (theme: CustomTheme) =>
     outlined: {
       borderWidth: 1,
       borderColor: theme.colors.surfaceVariant,
+      backgroundColor: theme.colors.background,
     },
   });
