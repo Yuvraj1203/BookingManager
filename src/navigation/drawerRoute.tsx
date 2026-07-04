@@ -36,10 +36,10 @@ export const DrawerRoute = () => {
         ),
       })}
       drawerContent={props => <AppDrawer {...props} />}
-      initialRouteName="Dashboard"
+      initialRouteName="Home"
     >
       <Drawer.Screen
-        name="Dashboard"
+        name="Home"
         component={BottomTabRoute}
         options={({ route }) => ({
           ...commonOptions,

@@ -1,6 +1,8 @@
-import { CustomButton, SafeScreen, Tap } from '@/components';
+import { ButtonIconsProps, CustomButton, SafeScreen, Tap } from '@/components';
+import { useAppLanguageStore } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { DashboardCard } from './dashboardCard';
 
@@ -11,19 +13,28 @@ export const Dashboard = () => {
   /** theme integration in styles */
   const styles = makeStyle(theme);
 
+  /** for tranlations */
+  const { t } = useTranslation();
+
+  const setLang = useAppLanguageStore(state => state.changeAppLanguage);
+
+  const buttonPlus = ({ size, color }: ButtonIconsProps) => {
+    return <Images.Plus size={size} color={color} />;
+  };
+
   return (
     <SafeScreen style={styles.main}>
       <View>
         <View style={styles.cardsContainer}>
           <Tap
             shadow={true}
-            onPress={() => console.log('hi')}
+            onPress={() => setLang('hi')}
             containerStyle={styles.cards}
             style={[styles.card, styles.primaryBg]}
           >
             <DashboardCard
               image={Images.calendar}
-              title={'THis Month'}
+              title={t('ThisMonth')}
               value={'4'}
               valueUnit={'Bookings'}
               color={theme.colors.onPrimary}
@@ -69,13 +80,15 @@ export const Dashboard = () => {
               image={Images.calendar}
               title={'THis Month'}
               value={'4'}
-              valueUnit={'Bookings'}
+              valueUnit={t('Bookings')}
             />
           </Tap>
         </View>
       </View>
 
-      <CustomButton>{'Quick add booking'}</CustomButton>
+      <CustomButton iconElement={buttonPlus}>
+        {t('QuickAddBooking')}
+      </CustomButton>
     </SafeScreen>
   );
 };

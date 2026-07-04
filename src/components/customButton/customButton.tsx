@@ -1,6 +1,6 @@
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { hideKeyboard } from '@/utils/utils';
-import { isValidElement, ReactElement, useMemo } from 'react';
+import { ReactElement, useMemo } from 'react';
 import {
   GestureResponderEvent,
   ImageSourcePropType,
@@ -16,6 +16,8 @@ import {
   ImageType,
   ResizeModeType,
 } from '../customImage/customImage';
+
+export type ButtonIconsProps = { size: number; color: string };
 
 export enum ButtonVariants {
   text = 'text',
@@ -47,7 +49,7 @@ type Props = {
   textColor?: string;
   loading?: boolean;
   icon?: ButtonIcon;
-  iconElement?: ReactElement;
+  iconElement?: ({ size, color }: ButtonIconsProps) => ReactElement;
   onPress?: (e: GestureResponderEvent) => void;
   style?: StyleProp<ViewStyle>;
   contentStyle?: StyleProp<ViewStyle>;
@@ -58,7 +60,9 @@ type Props = {
 export function CustomButton(props: Props) {
   const theme = useTheme(); //theme
 
-  const styles = makeStyles(theme); // access StylesSheet with theme implemented
+  const styles = makeStyles(theme, props.icon?.direction); // access StylesSheet with theme implemented
+
+  const { icon, iconElement } = props;
 
   // handle on press event on button
   const handlePress = (e: GestureResponderEvent) => {
@@ -77,31 +81,35 @@ export function CustomButton(props: Props) {
     return props.textColor
       ? props.textColor
       : props.mode
-      ? props.mode == ButtonVariants.outlined
+      ? props.mode === ButtonVariants.outlined
         ? theme.colors.onSurfaceVariant
         : theme.colors.surface
       : theme.colors.surface;
   };
 
   const memoizedIcon = useMemo(() => {
-    if (!props.icon) return undefined;
-
-    if (isValidElement(props.iconElement)) {
-      // icon is <Images.Wallet />
-      return props.iconElement;
+    if (!icon && !iconElement) {
+      return undefined;
     }
 
-    return ({ size, color }: { size: number; color: string }) => (
-      <View style={[{ height: size, width: size }, props.icon?.style]}>
+    if (typeof iconElement === 'function') {
+      // icon is <Images.Wallet />
+      return ({ size, color }: ButtonIconsProps) => (
+        <View>{iconElement && iconElement({ size, color })}</View>
+      );
+    }
+
+    return ({ size, color }: ButtonIconsProps) => (
+      <View style={[{ height: size, width: size }, icon?.style]}>
         <CustomImage
-          source={props.icon?.source}
-          type={props.icon?.type}
+          source={icon?.source}
+          type={icon?.type}
           style={{ height: size, width: size }}
-          color={props.icon?.color ?? color}
+          color={icon?.color ?? color}
         />
       </View>
     );
-  }, [props.icon, props.iconElement]);
+  }, [icon, iconElement]);
 
   return (
     <Button
@@ -113,13 +121,7 @@ export function CustomButton(props: Props) {
       loading={props.loading}
       disabled={props.disabled}
       style={[styles.button, props.style]}
-      contentStyle={[
-        props.contentStyle,
-        {
-          flexDirection:
-            props.icon?.direction === Direction.right ? 'row-reverse' : 'row',
-        },
-      ]}
+      contentStyle={[props.contentStyle, styles.content]}
       maxFontSizeMultiplier={1}
       icon={memoizedIcon}
     >
@@ -128,10 +130,13 @@ export function CustomButton(props: Props) {
   );
 }
 
-const makeStyles = (theme: CustomTheme) =>
+const makeStyles = (theme: CustomTheme, direction?: Direction) =>
   StyleSheet.create({
     button: {
       borderRadius: theme.roundness,
+    },
+    content: {
+      flexDirection: direction === Direction.right ? 'row-reverse' : 'row',
     },
   });
 export default CustomButton;

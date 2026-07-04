@@ -1,5 +1,5 @@
 export type DrawerStackParamList = {
-  Dashboard: undefined;
+  Home: undefined;
   DrawerOne: undefined;
   Schedule: undefined;
   Revenue: undefined;

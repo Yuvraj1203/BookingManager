@@ -1,4 +1,4 @@
-import { Wallet } from 'lucide-react-native';
+import { Plus, Wallet } from 'lucide-react-native';
 
 export const Images = {
   appIcon: require('../images/images/appIcon.png'),
@@ -166,4 +166,5 @@ export const Images = {
   aboutUs: require('../images/images/aboutUs.svg'),
   mousePointer: require('../images/images/mousePointer.svg'),
   Wallet: Wallet,
+  Plus: Plus,
 };
