@@ -25,8 +25,9 @@ const RootNavigator = () => {
         component={AddBooking}
         options={{
           presentation: 'formSheet',
-          headerShown: true,
-          sheetAllowedDetents: 'fitToContents',
+          headerShown: false,
+          sheetAllowedDetents: [1.0],
+          sheetExpandsWhenScrolledToEdge: true,
         }}
       />
     </RootStack.Navigator>

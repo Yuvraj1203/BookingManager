@@ -72,14 +72,7 @@ const makeStyle = (theme: CustomTheme) =>
     },
     shadowContainer: {
       padding: 10,
-      shadowColor: theme.colors.outline,
-      shadowOffset: {
-        width: 0,
-        height: 4,
-      },
-      shadowOpacity: 0.2,
-      shadowRadius: 10,
-      elevation: 8, // Android
+      boxShadow: theme.boxShadow,
       borderRadius: theme.roundness,
     },
   });

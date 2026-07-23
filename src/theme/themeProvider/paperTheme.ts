@@ -21,6 +21,11 @@ const themeDestructure = () => {
   let roundness = 25;
   let extraRoundness = 40;
   let lightRoundness = 6;
+  let inputRoundness = 12;
+  let lightBoxShadow = '0 1px 3px 0 #0000001a, 0 1px 2px -1px #0000001a';
+  let darkBoxShadow = '0 1px 3px 0 #FFFFFF1A, 0 1px 2px -1px #FFFFFF14';
+  let upperLightShadow = '0 -3px 3px -0.5px #0000001a';
+  let upperDarkShadow = '0 -3px 3px -0.5px #FFFFFF14';
 
   //for fonts
   const fonts = {
@@ -51,6 +56,9 @@ const themeDestructure = () => {
     roundness: roundness,
     extraRoundness: extraRoundness,
     lightRoundness: lightRoundness,
+    inputRoundness: inputRoundness,
+    boxShadow: lightBoxShadow,
+    upperBoxShadow: upperLightShadow,
     colors: {
       ...DefaultThemeLight.colors,
       ...NavigationLightTheme.colors,
@@ -99,6 +107,9 @@ const themeDestructure = () => {
     roundness: roundness,
     extraRoundness: extraRoundness,
     lightRoundness: lightRoundness,
+    inputRoundness: inputRoundness,
+    boxShadow: darkBoxShadow,
+    upperBoxShadow: upperDarkShadow,
     colors: {
       ...DefaultThemeDark.colors,
       ...NavigationDarkTheme.colors,
@@ -161,6 +172,9 @@ export function useTheme(): CustomTheme {
 export interface CustomTheme extends MD3Theme {
   extraRoundness: number;
   lightRoundness: number;
+  inputRoundness: number;
+  boxShadow: string;
+  upperBoxShadow: string;
   colors: MD3Theme['colors'] &
     NavigationTheme['colors'] & {
       primaryHighlight1: string;

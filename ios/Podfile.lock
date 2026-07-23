@@ -1429,6 +1429,69 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
+  - react-native-blur (4.4.1):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
+  - react-native-date-picker (5.0.13):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
+  - react-native-image-picker (8.2.1):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
   - react-native-pager-view (8.0.2):
     - hermes-engine
     - RCTRequired
@@ -1954,6 +2017,8 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
+  - RNInAppBrowser (3.7.1):
+    - React-Core
   - RNReanimated (4.4.1):
     - hermes-engine
     - RCTRequired
@@ -2238,6 +2303,9 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - React-mutationobservernativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/mutationobserver`)
+  - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
+  - react-native-date-picker (from `../node_modules/react-native-date-picker`)
+  - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-vector-icons-material-design-icons (from `../node_modules/@react-native-vector-icons/material-design-icons`)"
@@ -2279,6 +2347,7 @@ DEPENDENCIES:
   - "ReactNavigation (from `../node_modules/@react-navigation/native`)"
   - "RNFastImage (from `../node_modules/@d11/react-native-fast-image`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNInAppBrowser (from `../node_modules/react-native-inappbrowser-reborn`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -2381,6 +2450,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
   React-mutationobservernativemodule:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/mutationobserver"
+  react-native-blur:
+    :path: "../node_modules/@react-native-community/blur"
+  react-native-date-picker:
+    :path: "../node_modules/react-native-date-picker"
+  react-native-image-picker:
+    :path: "../node_modules/react-native-image-picker"
   react-native-pager-view:
     :path: "../node_modules/react-native-pager-view"
   react-native-safe-area-context:
@@ -2463,6 +2538,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@d11/react-native-fast-image"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNInAppBrowser:
+    :path: "../node_modules/react-native-inappbrowser-reborn"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -2520,6 +2597,9 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 368cbccaf25d49dafc4b29a24f7e6dae72ad5930
   React-microtasksnativemodule: e446366818d636e3e9525518e23b1f06c12db658
   React-mutationobservernativemodule: 91e1960597f1c6df3a58749d25c1d3821ab9fc37
+  react-native-blur: 8ba46e551e04023fbe17ffa860917c1976453eed
+  react-native-date-picker: 0177b1457abd8026f00141110c1da7c05523af64
+  react-native-image-picker: 7ce01fe1fab4b9efa4f983366c5057511c968bb9
   react-native-pager-view: 165ed34bd1a23753ab7cf0fb5e668cf1f91cd36c
   react-native-safe-area-context: 0d652bc91c2093b0da554b6e32f79f9a727da3a4
   react-native-vector-icons-material-design-icons: a4b6ec02814573c09203a725ee3767a7e8d5eb77
@@ -2561,6 +2641,7 @@ SPEC CHECKSUMS:
   ReactNavigation: 82b933098dd679babbf6b7d15a8dcfb0272013cf
   RNFastImage: ed8c5d27a3201f9cab374075260de8b97867e2a8
   RNGestureHandler: 771dfccc7c71ed3a86cce4a2176a2ac4a63ba574
+  RNInAppBrowser: 904d24dc75e8e6c6c98a3160329192608946f9df
   RNReanimated: 5cbcdb713d6548c7ab0a769ad586a6b39fad73a9
   RNScreens: 04eaa3cec7258c13d744af58aed4aec958a17eda
   RNSVG: ad1539d1b9647a6f7ff9a3a41dc96872f0b7a78c

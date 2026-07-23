@@ -1,10 +1,11 @@
 import { CustomImage, Tap } from '@/components';
 import { DrawerOne } from '@/screens';
 import { Images } from '@/theme/assets/images';
-import { useAppNavigation } from '@/utils/navigationUtils';
+import { useTheme } from '@/theme/themeProvider/paperTheme';
 import {
   createDrawerNavigator,
   DrawerNavigationOptions,
+  DrawerNavigationProp,
 } from '@react-navigation/drawer';
 import {
   DrawerActions,
@@ -21,19 +22,27 @@ const commonOptions: DrawerNavigationOptions = {
   // headerShown: false,
 };
 
+type Navigation = DrawerNavigationProp<DrawerStackParamList>;
+
 export const DrawerRoute = () => {
+  const theme = useTheme();
+
   /** theme integration in styles */
   const styles = makeStyle();
 
-  const navigation = useAppNavigation();
+  // const navigation = useAppNavigation();
 
-  const headerHamburger = () => {
+  const headerHamburger = (navigation: Navigation) => {
     return (
       <Tap
         onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
         style={styles.logoContainer}
       >
-        <CustomImage source={Images.drawer} style={styles.hamburger} />
+        <CustomImage
+          color={theme.colors.onSurface}
+          source={Images.drawer}
+          style={styles.hamburger}
+        />
       </Tap>
     );
   };
@@ -44,8 +53,8 @@ export const DrawerRoute = () => {
 
   return (
     <Drawer.Navigator
-      screenOptions={() => ({
-        headerLeft: () => headerHamburger(),
+      screenOptions={({ navigation }: { navigation: Navigation }) => ({
+        headerLeft: () => headerHamburger(navigation),
       })}
       drawerContent={appDrawerContent}
       initialRouteName="Home"
