@@ -1,3 +1,4 @@
+import { CustomDatePicker } from '@/components';
 import { AddBooking, SplashScreen } from '@/screens';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { DrawerRoute } from './drawerRoute';
@@ -27,6 +28,17 @@ const RootNavigator = () => {
           presentation: 'formSheet',
           headerShown: false,
           sheetAllowedDetents: [1.0],
+          sheetExpandsWhenScrolledToEdge: true,
+        }}
+      />
+
+      <RootStack.Screen
+        name="CustomDatePicker"
+        component={CustomDatePicker}
+        options={{
+          presentation: 'formSheet',
+          headerShown: false,
+          sheetAllowedDetents: 'fitToContents',
           sheetExpandsWhenScrolledToEdge: true,
         }}
       />

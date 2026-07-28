@@ -19,7 +19,7 @@ export const SplashScreen = () => {
   useEffect(() => {
     const redirectTimeout = setTimeout(() => {
       navigation.navigate('DrawerRoute');
-    }, 3000);
+    }, 1500);
 
     return () => clearTimeout(redirectTimeout);
   });

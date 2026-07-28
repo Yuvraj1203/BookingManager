@@ -13,6 +13,7 @@ import {
 export enum ImageType {
   png = 'png',
   svg = 'svg',
+  luicide = 'luicide',
 }
 
 export enum ResizeModeType {

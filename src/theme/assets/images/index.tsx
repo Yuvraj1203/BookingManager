@@ -1,4 +1,10 @@
-import { Camera, CirclePlus, Plus, Wallet } from 'lucide-react-native';
+import {
+  Camera,
+  CirclePlus,
+  IndianRupee,
+  Plus,
+  Wallet,
+} from 'lucide-react-native';
 
 export const Images = {
   appIcon: require('../images/images/appIcon.png'),
@@ -169,4 +175,5 @@ export const Images = {
   Plus: Plus,
   Camera: Camera,
   CirclePlus: CirclePlus,
+  IndianRupee: IndianRupee,
 };

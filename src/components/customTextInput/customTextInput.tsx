@@ -98,6 +98,7 @@ type Props = {
   inputStyle?: StyleProp<TextStyle>;
   isRequired?: boolean;
   labelVariant?: TextVariants;
+  prefixTapStyle?: StyleProp<TextStyle>;
 };
 
 type ValidateProps = { value: string; validator?: z.ZodType<any, any> };
@@ -212,7 +213,7 @@ const CustomTextInput = forwardRef<RNTextInput, Props>(
     return (
       <View style={props.style}>
         {showLabel && (
-          <CustomText variant={labelVariant} style={styles.heading}>
+          <CustomText variant={labelVariant} style={styles.label}>
             {props.label}
             {isRequired && (
               <CustomText
@@ -227,6 +228,12 @@ const CustomTextInput = forwardRef<RNTextInput, Props>(
         )}
 
         <View pointerEvents={enabled ? 'auto' : 'none'}>
+          {props.prefixIcon != null &&
+            props.prefixIcon.type === ImageType.luicide && (
+              <View style={[styles.prefixIcon, props.prefixTapStyle]}>
+                {props.prefixIcon.luicideIcon}
+              </View>
+            )}
           <TextInput
             ref={ref}
             mode={mode}
@@ -278,21 +285,25 @@ const CustomTextInput = forwardRef<RNTextInput, Props>(
             maxFontSizeMultiplier={1}
           />
 
-          {props.prefixIcon != null && (
-            <Tap onPress={props.prefixIcon.tap} style={styles.prefixIcon}>
-              <CustomImage
-                source={props.prefixIcon.source}
-                color={
-                  props.prefixIcon.color
-                    ? props.prefixIcon.color
-                    : theme.colors.onSurfaceVariant
-                }
-                type={props.prefixIcon.type}
-                resizeMode={props.prefixIcon.resizeMode}
-                style={[styles.prefixIconImage, props.prefixIcon.style]}
-              />
-            </Tap>
-          )}
+          {props.prefixIcon != null &&
+            props.prefixIcon.type !== ImageType.luicide && (
+              <Tap
+                onPress={props.prefixIcon.tap}
+                style={[styles.prefixIcon, props.prefixTapStyle]}
+              >
+                <CustomImage
+                  source={props.prefixIcon.source}
+                  color={
+                    props.prefixIcon.color
+                      ? props.prefixIcon.color
+                      : theme.colors.onSurfaceVariant
+                  }
+                  type={props.prefixIcon.type}
+                  resizeMode={props.prefixIcon.resizeMode}
+                  style={[styles.prefixIconImage, props.prefixIcon.style]}
+                />
+              </Tap>
+            )}
           {props.errorMsg && showErrorIcon ? (
             <Tap style={styles.suffixIcon}>
               <CustomImage
@@ -356,11 +367,14 @@ const makeStyles = (theme: CustomTheme, props: Props) =>
     heading: {
       paddingLeft: 5,
     },
+    label: {
+      marginBottom: 5,
+      paddingLeft: 5,
+    },
     textInput: {
       paddingLeft: props.prefixIcon ? 30 : 10,
       paddingRight: props.suffixIcon ? 30 : 0,
       backgroundColor: props.fillColor ?? props.fillColor,
-      marginTop: 5,
     },
     content: {
       paddingTop: props.prefixIcon || props.suffixIcon ? 0 : 5,
@@ -377,11 +391,10 @@ const makeStyles = (theme: CustomTheme, props: Props) =>
       boxShadow: theme.boxShadow,
     },
     prefixIcon: {
-      left: 5,
+      left: 10,
       position: 'absolute',
-      justifyContent: 'center',
-      top: 12,
-      //bottom: 15,
+      top: '50%',
+      transform: [{ translateY: '-50%' }],
     },
     prefixIconImage: {
       height: 20,
@@ -390,9 +403,8 @@ const makeStyles = (theme: CustomTheme, props: Props) =>
     suffixIcon: {
       right: 10,
       position: 'absolute',
-      justifyContent: 'center',
-      top: 15,
-      // bottom: 15,
+      top: '50%',
+      transform: [{ translateY: '-50%' }],
     },
     loadingIcon: {
       right: 10,

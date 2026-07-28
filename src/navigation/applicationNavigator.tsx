@@ -1,6 +1,7 @@
 import { useAppLanguageStore } from '@/store';
 import { useTheme } from '@/theme/themeProvider/paperTheme';
 import i18n from '@/translations';
+import { ReturnScreenDataProvider } from '@/utils/navigationUtils';
 import { NavigationContainer } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { I18nextProvider } from 'react-i18next';
@@ -25,11 +26,13 @@ const ApplicationNavigator = () => {
   return (
     <GestureHandlerRootView style={styles.main}>
       <I18nextProvider i18n={i18n}>
-        <PaperProvider theme={appTheme}>
-          <NavigationContainer theme={appTheme}>
-            <RootNavigator />
-          </NavigationContainer>
-        </PaperProvider>
+        <ReturnScreenDataProvider>
+          <PaperProvider theme={appTheme}>
+            <NavigationContainer theme={appTheme}>
+              <RootNavigator />
+            </NavigationContainer>
+          </PaperProvider>
+        </ReturnScreenDataProvider>
       </I18nextProvider>
     </GestureHandlerRootView>
   );

@@ -20,6 +20,8 @@
   "AddReceiptImage": "रसीद छवि जोड़ें",
   "TakePhoto": "फोटो लें",
   "ChooseFromGallery": "गैलरी से चुनें",
+  "ChooseFile": "फ़ाइल चुनें",
   "Cancel": "रद्द करें",
-  "UploadImage": "तस्विर अपलोड करना"
+  "UploadImage": "तस्विर अपलोड करना",
+  "Confirm": "पुष्टि करना"
 }

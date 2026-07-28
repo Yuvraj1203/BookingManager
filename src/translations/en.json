@@ -20,6 +20,8 @@
   "AddReceiptImage": "Add receipt image",
   "TakePhoto": "Take photo",
   "ChooseFromGallery": "Choose from gallery",
+  "ChooseFile": "Choose file",
   "Cancel": "Cancel",
-  "UploadImage": "Upload Image"
+  "UploadImage": "Upload Image",
+  "Confirm": "Confirm"
 }

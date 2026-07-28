@@ -1,16 +1,24 @@
 import {
+  CurrencyFormInput,
   CustomButton,
+  CustomImagePicker,
   CustomText,
   FormTextInput,
   SafeScreen,
   Tap,
 } from '@/components';
+import { CustomDatePickerReturnProp } from '@/components/customDatePicker/customDatePicker';
+import { DatePickerMode } from '@/components/customDatePicker/customDatePicker.types';
 import { InputModes } from '@/components/customTextInput/formTextInput';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
-import { useAppNavigation } from '@/utils/navigationUtils';
+import {
+  useAppNavigation,
+  useReturnDataContext,
+} from '@/utils/navigationUtils';
+import { formatDate } from '@/utils/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -25,6 +33,17 @@ import { addBookingSchema, AddBookingSchemaType } from './addBooking.schema';
 
 const { height } = Dimensions.get('screen');
 
+//id for receiving data back as two
+enum DatePickerEnum {
+  Date = 'Date',
+  Time = 'Time',
+}
+
+enum DateFormatEnum {
+  ShortMonth = 'MMM DD,YYYY',
+  HourMinute = 'hh:mm A',
+}
+
 export const AddBooking = () => {
   /**to get the default theme of app */
   const theme = useTheme();
@@ -38,11 +57,67 @@ export const AddBooking = () => {
   /** for navigation */
   const navigation = useAppNavigation();
 
+  /** image picker state */
+  const [showPicker, setShowPicker] = useState(false);
+
+  /** date ad time state */
+  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [selectedTime, setSelectedTime] = useState<Date>();
+
   /** use form declaration */
-  const { control, handleSubmit } = useForm<AddBookingSchemaType>({
+  const { control, handleSubmit, setValue } = useForm<AddBookingSchemaType>({
+    defaultValues: {
+      duration: '1',
+      horses: '1',
+    },
     resolver: zodResolver(addBookingSchema),
-    defaultValues: {},
   });
+
+  /** receive value from date picker */
+  const { receiveDataBack } = useReturnDataContext();
+
+  receiveDataBack('AddBooking', (data: CustomDatePickerReturnProp) => {
+    console.log('this is your data=>', data.id, data.selectedDate);
+    if (data.selectedDate) {
+      if (data.id === DatePickerEnum.Date) {
+        setSelectedDate(data.selectedDate);
+        const formattedDate = formatDate({
+          date: data.selectedDate,
+          // parseFormat: 'YYYY-MM-DDTHH:mm:ss',
+          returnFormat: DateFormatEnum.ShortMonth,
+        });
+        setValue('date', formattedDate);
+      } else if (data.id === DatePickerEnum.Time) {
+        setSelectedTime(data.selectedDate);
+        const formattedDate = formatDate({
+          date: data.selectedDate,
+          // parseFormat: 'YYYY-MM-DDTHH:mm:ss',
+          returnFormat: DateFormatEnum.HourMinute,
+        });
+        setValue('time', formattedDate);
+      }
+    }
+  });
+
+  /** opens the CustomDatePicker formSheet and writes the picked date back into the form */
+  const openDatePicker = () => {
+    navigation.navigate('CustomDatePicker', {
+      mode: DatePickerMode.date,
+      title: t(DatePickerEnum.Date),
+      date: selectedDate ?? new Date(),
+      parentScreen: 'AddBooking',
+    });
+  };
+
+  /** opens the CustomDatePicker formSheet in time mode and writes the picked time back into the form */
+  const openTimePicker = () => {
+    navigation.navigate('CustomDatePicker', {
+      mode: DatePickerMode.time,
+      title: t(DatePickerEnum.Time),
+      date: selectedTime ?? new Date(),
+      parentScreen: 'AddBooking',
+    });
+  };
 
   /** save the booking */
   const onSubmit = (data: AddBookingSchemaType) => {
@@ -85,35 +160,45 @@ export const AddBooking = () => {
                 maxLength={10}
                 style={styles.field}
               />
-              <FormTextInput
-                control={control}
-                name={'date'}
-                placeholder={t('Date')}
-                label={t('Date')}
-                style={styles.field}
-              />
-              <FormTextInput
-                control={control}
-                name={'time'}
-                placeholder={t('Time')}
-                label={t('Time')}
-                style={styles.field}
-              />
-              <FormTextInput
-                control={control}
-                name={'duration'}
-                placeholder={t('Duration')}
-                label={t('Duration')}
-                inputMode={InputModes.numeric}
-                style={styles.field}
-              />
-              <FormTextInput
-                control={control}
-                name={'horses'}
-                placeholder={t('Horses')}
-                label={t('Horses')}
-                style={styles.field}
-              />
+              <View style={styles.flexRow}>
+                <Tap containerStyle={styles.flex} onPress={openDatePicker}>
+                  <FormTextInput
+                    control={control}
+                    name={'date'}
+                    placeholder={t('Date')}
+                    label={t('Date')}
+                    enabled={false}
+                    style={[styles.field, styles.flex]}
+                  />
+                </Tap>
+                <Tap containerStyle={styles.flex} onPress={openTimePicker}>
+                  <FormTextInput
+                    control={control}
+                    name={'time'}
+                    placeholder={t('Time')}
+                    label={t('Time')}
+                    enabled={false}
+                    style={[styles.field, styles.flex]}
+                  />
+                </Tap>
+              </View>
+              <View style={styles.flexRow}>
+                <FormTextInput
+                  control={control}
+                  name={'duration'}
+                  placeholder={t('Duration')}
+                  label={t('Duration')}
+                  inputMode={InputModes.numeric}
+                  style={[styles.field, styles.flex]}
+                />
+                <FormTextInput
+                  control={control}
+                  name={'horses'}
+                  placeholder={t('Horses')}
+                  label={t('Horses')}
+                  style={[styles.field, styles.flex]}
+                />
+              </View>
               <FormTextInput
                 control={control}
                 name={'venue'}
@@ -128,22 +213,22 @@ export const AddBooking = () => {
                 label={t('AddOns')}
                 style={styles.field}
               />
-              <FormTextInput
-                control={control}
-                name={'totalAmount'}
-                placeholder={t('TotalAmount')}
-                label={t('TotalAmount')}
-                inputMode={InputModes.decimal}
-                style={styles.field}
-              />
-              <FormTextInput
-                control={control}
-                name={'advancePaid'}
-                placeholder={t('AdvancePaid')}
-                label={t('AdvancePaid')}
-                inputMode={InputModes.decimal}
-                style={styles.field}
-              />
+              <View style={styles.flexRow}>
+                <CurrencyFormInput
+                  control={control}
+                  name={'totalAmount'}
+                  placeholder={t('TotalAmount')}
+                  label={t('TotalAmount')}
+                  style={[styles.field, styles.flex]}
+                />
+                <CurrencyFormInput
+                  control={control}
+                  name={'advancePaid'}
+                  placeholder={t('AdvancePaid')}
+                  label={t('AdvancePaid')}
+                  style={[styles.field, styles.flex]}
+                />
+              </View>
               <FormTextInput
                 control={control}
                 name={'status'}
@@ -161,8 +246,15 @@ export const AddBooking = () => {
                 style={styles.field}
               />
 
-              <Tap onPress={() => {}} style={styles.imagePickerTap}>
-                <Images.CirclePlus size={40} strokeWidth={1.5} />
+              <Tap
+                onPress={() => setShowPicker(true)}
+                style={styles.imagePickerTap}
+              >
+                <Images.CirclePlus
+                  size={40}
+                  strokeWidth={1.5}
+                  color={theme.colors.onSurface}
+                />
                 <CustomText>{t('UploadImage')}</CustomText>
               </Tap>
             </ScrollView>
@@ -174,6 +266,11 @@ export const AddBooking = () => {
             </CustomButton>
           </View>
         </View>
+
+        <CustomImagePicker
+          showPicker={showPicker}
+          setShowPicker={setShowPicker}
+        />
       </KeyboardAvoidingView>
     </SafeScreen>
   );
@@ -209,10 +306,15 @@ const makeStyles = (theme: CustomTheme) =>
       padding: 10,
       borderTopStartRadius: theme.roundness,
       borderTopEndRadius: theme.roundness,
-      height: 150,
     },
     field: {
       marginTop: 5,
+    },
+    flexRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 15,
+      flex: 1,
     },
     imagePickerTap: {
       borderWidth: 1,

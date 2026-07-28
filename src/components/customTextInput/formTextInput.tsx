@@ -9,8 +9,8 @@ import {
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { containsJavaScript, showSnackbar } from '@/utils/utils';
-import React, { forwardRef, memo, useMemo, useRef } from 'react';
-import { Controller } from 'react-hook-form';
+import React, { forwardRef, memo, ReactNode, useMemo, useRef } from 'react';
+import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
   ImageSourcePropType,
@@ -84,12 +84,13 @@ export type InputIcon = {
   // CustomTextInput's prefix/suffix icon slot instead of being forced to
   // CustomTextInput's hardcoded 20×20.
   style?: StyleProp<ImageStyle>;
+  luicideIcon?: ReactNode;
 };
 
-type Props = {
+type Props<TFieldValues extends FieldValues> = {
   ref?: React.Ref<RNTextInput>;
-  control?: any;
-  name: string;
+  control: Control<TFieldValues>;
+  name: FieldPath<TFieldValues>;
   label?: string;
   text?: string;
   mode?: InputVariants;
@@ -131,176 +132,176 @@ type Props = {
   isRequired?: boolean;
 };
 
-const FormTextInput = forwardRef<RNTextInput, Props>(
-  (
-    {
-      mode = InputVariants.outlined,
-      height = 48,
-      inputMode = InputModes.default,
-      textAlign = InputTextAlign.left,
-      textCapitalization = InputTextCapitalization.sentences,
-      maxLines = 1,
-      multiLine = false,
-      enabled = true,
-      loading = false,
-      showError = true,
-      showErrorIcon = true,
-      preserveSuffixIconOnError = false,
-      labelVariant = TextVariants.bodyMedium,
-      ...props
-    },
-    ref,
-  ) => {
-    const theme = useTheme(); // theme
-    const styles = makeStyles(theme, props); // access StylesSheet with theme implemented
-    const { t } = useTranslation();
-    const inputHeight = useRef<number>(height); // Initial height
+const FormTextInputBase = <TFieldValues extends FieldValues>(
+  {
+    mode = InputVariants.outlined,
+    height = 48,
+    inputMode = InputModes.default,
+    textAlign = InputTextAlign.left,
+    textCapitalization = InputTextCapitalization.sentences,
+    maxLines = 1,
+    multiLine = false,
+    enabled = true,
+    loading = false,
+    showError = true,
+    showErrorIcon = true,
+    preserveSuffixIconOnError = false,
+    labelVariant = TextVariants.bodyMedium,
+    ...props
+  }: Props<TFieldValues>,
+  ref: React.ForwardedRef<RNTextInput>,
+) => {
+  const theme = useTheme(); // theme
+  const styles = makeStyles(theme, props); // access StylesSheet with theme implemented
+  const { t } = useTranslation();
+  const inputHeight = useRef<number>(height); // Initial height
 
-    // set keyboard type to show to user on specific input mode
-    const setKeyboard = useMemo((): KeyboardTypeOptions => {
-      const keyTypeMap: Record<string, KeyboardTypeOptions> = {
-        phone: 'phone-pad',
-        number: 'phone-pad',
-        email: 'email-address',
-        password: 'default',
-        decimal: 'decimal-pad',
-        numeric: 'numeric',
-      };
-      return inputMode ? keyTypeMap[inputMode] || 'default' : 'default';
-    }, [inputMode]);
+  // set keyboard type to show to user on specific input mode
+  const setKeyboard = useMemo((): KeyboardTypeOptions => {
+    const keyTypeMap: Record<string, KeyboardTypeOptions> = {
+      phone: 'phone-pad',
+      number: 'phone-pad',
+      email: 'email-address',
+      password: 'default',
+      decimal: 'decimal-pad',
+      numeric: 'numeric',
+    };
+    return inputMode ? keyTypeMap[inputMode] || 'default' : 'default';
+  }, [inputMode]);
 
-    // validate text when user type according to specific input mode
-    const validateInput = (value: string): boolean => {
-      if (!inputMode && !props.inputFormatters) return true;
+  // validate text when user type according to specific input mode
+  const validateInput = (value: string): boolean => {
+    if (!inputMode && !props.inputFormatters) return true;
 
-      const regexMap: Record<string, RegExp> = {
-        phone: /^[0-9]+$/,
-        number: /^[0-9]*\.?[0-9]+$/,
-        name: /^[a-zA-Z ]*$/,
-        address: /^[0-9a-zA-Z\s-_.,()]*$/,
-        email: /^[0-9a-zA-Z@-_.]*$/,
-        password: /^[0-9a-zA-Z@-_.$]*$/,
-        decimal: /^\d*(\.\d{0,2})?$/,
-        numeric: /^\d+$/,
-      };
-
-      if (props.inputFormatters) {
-        return props.inputFormatters.test(value);
-      }
-
-      return (
-        (value.length === 0 ||
-          !inputMode ||
-          regexMap[inputMode]?.test(value)) ??
-        true
-      );
+    const regexMap: Record<string, RegExp> = {
+      phone: /^[0-9]+$/,
+      number: /^[0-9]*\.?[0-9]+$/,
+      name: /^[a-zA-Z ]*$/,
+      address: /^[0-9a-zA-Z\s-_.,()]*$/,
+      email: /^[0-9a-zA-Z@-_.]*$/,
+      password: /^[0-9a-zA-Z@-_.$]*$/,
+      decimal: /^\d*(\.\d{0,2})?$/,
+      numeric: /^\d+$/,
     };
 
-    // on change text
-    const handleFormatter = (
-      value: string,
-      onChangeText: (value: string) => void,
-    ) => {
-      // 🚫 BLOCK JAVASCRIPT / SCRIPT CONTENT
-      if (containsJavaScript(value)) {
-        onChangeText('');
-        props.onChangeText?.('');
-        Keyboard.dismiss();
-        showSnackbar(t('InvalidJSMsg'), 'danger');
-        return;
-      }
-      if (validateInput(value)) {
-        onChangeText(value);
-        props.onChangeText?.(value);
-      }
-    };
+    if (props.inputFormatters) {
+      return props.inputFormatters.test(value);
+    }
 
     return (
-      <Controller
-        control={props.control}
-        name={props.name}
-        rules={{
-          required: true,
-        }}
-        render={({
-          field: { onChange, onBlur, value },
-          fieldState: { error },
-        }) => (
-          <View style={props.style}>
-            {props.label ? (
-              <CustomText variant={labelVariant} style={styles.heading}>
-                {props.label}
-                {props.isRequired && (
-                  <CustomText
-                    variant={labelVariant}
-                    color={theme.colors.danger}
-                    style={styles.heading}
-                  >
-                    {' *'}
-                  </CustomText>
-                )}
-              </CustomText>
-            ) : (
-              <></>
-            )}
-            <View pointerEvents={enabled ? 'auto' : 'none'}>
-              <TextInput
-                ref={ref}
-                mode={mode}
-                value={value}
-                onChangeText={e => handleFormatter(e, onChange)}
-                onBlur={() => {
-                  onBlur();
-                  if (props.onBlur) {
-                    props.onBlur();
-                  }
-                }}
-                onFocus={() => {
-                  if (props.onFocus) {
-                    props.onFocus();
-                  }
-                }}
-                editable={enabled}
-                placeholder={props.placeholder}
-                secureTextEntry={props.hideText}
-                keyboardType={setKeyboard}
-                returnKeyType={
-                  props.returnKeyType
-                    ? props.returnKeyType
-                    : InputReturnKeyType.default
+      (value.length === 0 || !inputMode || regexMap[inputMode]?.test(value)) ??
+      true
+    );
+  };
+
+  // on change text
+  const handleFormatter = (
+    value: string,
+    onChangeText: (value: string) => void,
+  ) => {
+    // 🚫 BLOCK JAVASCRIPT / SCRIPT CONTENT
+    if (containsJavaScript(value)) {
+      onChangeText('');
+      props.onChangeText?.('');
+      Keyboard.dismiss();
+      showSnackbar(t('InvalidJSMsg'), 'danger');
+      return;
+    }
+    if (validateInput(value)) {
+      onChangeText(value);
+      props.onChangeText?.(value);
+    }
+  };
+
+  return (
+    <Controller
+      control={props.control}
+      name={props.name}
+      rules={{
+        required: true,
+      }}
+      render={({
+        field: { onChange, onBlur, value },
+        fieldState: { error },
+      }) => (
+        <View style={props.style}>
+          {props.label ? (
+            <CustomText variant={labelVariant} style={styles.heading}>
+              {props.label}
+              {props.isRequired && (
+                <CustomText
+                  variant={labelVariant}
+                  color={theme.colors.danger}
+                  style={styles.heading}
+                >
+                  {' *'}
+                </CustomText>
+              )}
+            </CustomText>
+          ) : (
+            <></>
+          )}
+          <View pointerEvents={enabled ? 'auto' : 'none'}>
+            <TextInput
+              ref={ref}
+              mode={mode}
+              value={value}
+              onChangeText={e => handleFormatter(e, onChange)}
+              onBlur={() => {
+                onBlur();
+                if (props.onBlur) {
+                  props.onBlur();
                 }
-                onSubmitEditing={props.onSubmitEditing}
-                textAlign={textAlign}
-                textAlignVertical="top"
-                autoCapitalize={textCapitalization}
-                maxLength={props.maxLength ?? props.maxLength}
-                numberOfLines={maxLines}
-                multiline={multiLine}
-                dense={true}
-                autoCorrect={props.autoCorrect}
-                spellCheck={props.spellCheck}
-                error={error?.message ? true : false}
-                style={[
-                  styles.textInput,
-                  {
-                    minHeight: inputHeight.current,
-                    fontSize: props.textSize,
-                  },
-                  maxLines ? { maxHeight: maxLines * 50 } : {},
-                ]}
-                contentStyle={[
-                  styles.content,
-                  props.contentStyle,
-                  error && { paddingRight: 25 },
-                ]}
-                outlineStyle={[styles.outlineStyle, props.outlineStyle]}
-                theme={{
-                  colors: { onSurfaceVariant: theme.colors.labelLight },
-                }}
-                maxFontSizeMultiplier={1}
-              />
-              {props.prefixIcon != null && (
-                <Tap onPress={props.prefixIcon.tap} style={styles.prefixIcon}>
+              }}
+              onFocus={() => {
+                if (props.onFocus) {
+                  props.onFocus();
+                }
+              }}
+              editable={enabled}
+              placeholder={props.placeholder}
+              secureTextEntry={props.hideText}
+              keyboardType={setKeyboard}
+              returnKeyType={
+                props.returnKeyType
+                  ? props.returnKeyType
+                  : InputReturnKeyType.default
+              }
+              onSubmitEditing={props.onSubmitEditing}
+              textAlign={textAlign}
+              textAlignVertical="top"
+              autoCapitalize={textCapitalization}
+              maxLength={props.maxLength ?? props.maxLength}
+              numberOfLines={maxLines}
+              multiline={multiLine}
+              dense={true}
+              autoCorrect={props.autoCorrect}
+              spellCheck={props.spellCheck}
+              error={error?.message ? true : false}
+              style={[
+                styles.textInput,
+                {
+                  minHeight: inputHeight.current,
+                  fontSize: props.textSize,
+                },
+                maxLines ? { maxHeight: maxLines * 50 } : {},
+              ]}
+              contentStyle={[
+                styles.content,
+                props.contentStyle,
+                error && styles.paddingRight,
+              ]}
+              outlineStyle={[styles.outlineStyle, props.outlineStyle]}
+              theme={{
+                colors: { onSurfaceVariant: theme.colors.labelLight },
+              }}
+              maxFontSizeMultiplier={1}
+            />
+            {props.prefixIcon != null && (
+              <Tap onPress={props.prefixIcon.tap} style={styles.prefixIcon}>
+                {props.prefixIcon.type === ImageType.luicide ? (
+                  props.prefixIcon.luicideIcon
+                ) : (
                   <CustomImage
                     source={props.prefixIcon.source}
                     color={
@@ -312,9 +313,27 @@ const FormTextInput = forwardRef<RNTextInput, Props>(
                     resizeMode={props.prefixIcon.resizeMode}
                     style={styles.prefixIconImage}
                   />
-                </Tap>
-              )}
-              {error?.message && showErrorIcon ? (
+                )}
+              </Tap>
+            )}
+            {error?.message && showErrorIcon ? (
+              <Tap style={styles.suffixIcon}>
+                <CustomImage
+                  source={Images.error}
+                  color={theme.colors.error}
+                  type={ImageType.svg}
+                  style={styles.suffixIconImage}
+                />
+              </Tap>
+            ) : loading ? (
+              <Tap style={styles.loadingIcon}>
+                <ActivityIndicator
+                  size={props.loadingSize}
+                  style={styles.inputLoader}
+                />
+              </Tap>
+            ) : error?.message ? (
+              !!error?.message && !preserveSuffixIconOnError ? (
                 <Tap style={styles.suffixIcon}>
                   <CustomImage
                     source={Images.error}
@@ -323,44 +342,6 @@ const FormTextInput = forwardRef<RNTextInput, Props>(
                     style={styles.suffixIconImage}
                   />
                 </Tap>
-              ) : loading ? (
-                <Tap style={styles.loadingIcon}>
-                  <ActivityIndicator
-                    size={props.loadingSize}
-                    style={styles.inputLoader}
-                  />
-                </Tap>
-              ) : error?.message ? (
-                !!error?.message && !preserveSuffixIconOnError ? (
-                  <Tap style={styles.suffixIcon}>
-                    <CustomImage
-                      source={Images.error}
-                      color={theme.colors.error}
-                      type={ImageType.svg}
-                      style={styles.suffixIconImage}
-                    />
-                  </Tap>
-                ) : !!props.suffixIcon &&
-                  (!error?.message || !!preserveSuffixIconOnError) ? (
-                  <Tap
-                    onPress={props.suffixIcon?.tap}
-                    style={styles.suffixIcon}
-                  >
-                    <CustomImage
-                      source={props.suffixIcon?.source}
-                      color={
-                        props.suffixIcon?.color
-                          ? props.suffixIcon.color
-                          : theme.colors.onSurfaceVariant
-                      }
-                      type={props.suffixIcon?.type}
-                      resizeMode={props.suffixIcon?.resizeMode}
-                      style={styles.suffixIconImage}
-                    />
-                  </Tap>
-                ) : (
-                  <></>
-                )
               ) : !!props.suffixIcon &&
                 (!error?.message || !!preserveSuffixIconOnError) ? (
                 <Tap onPress={props.suffixIcon?.tap} style={styles.suffixIcon}>
@@ -378,45 +359,65 @@ const FormTextInput = forwardRef<RNTextInput, Props>(
                 </Tap>
               ) : (
                 <></>
-              )}
-            </View>
-
-            {props.extraInfoTxt && (
-              <View style={styles.bottomLayout}>
-                <CustomText
-                  variant={TextVariants.labelMedium}
-                  color={theme.colors.labelLight}
-                >
-                  {props.extraInfoTxt}
-                </CustomText>
-              </View>
-            )}
-            {showError && (
-              <View style={styles.bottomLayout}>
-                <CustomText
-                  variant={TextVariants.labelMedium}
+              )
+            ) : !!props.suffixIcon &&
+              (!error?.message || !!preserveSuffixIconOnError) ? (
+              <Tap onPress={props.suffixIcon?.tap} style={styles.suffixIcon}>
+                <CustomImage
+                  source={props.suffixIcon?.source}
                   color={
-                    error?.message
-                      ? theme.colors.error
+                    props.suffixIcon?.color
+                      ? props.suffixIcon.color
                       : theme.colors.onSurfaceVariant
                   }
-                >
-                  {error?.message
-                    ? error?.message
-                    : props.helperTxt
-                    ? props.helperTxt
-                    : ''}
-                </CustomText>
-              </View>
+                  type={props.suffixIcon?.type}
+                  resizeMode={props.suffixIcon?.resizeMode}
+                  style={styles.suffixIconImage}
+                />
+              </Tap>
+            ) : (
+              <></>
             )}
           </View>
-        )}
-      />
-    );
-  },
-);
 
-const makeStyles = (theme: CustomTheme, props: Props) =>
+          {props.extraInfoTxt && (
+            <View style={styles.bottomLayout}>
+              <CustomText
+                variant={TextVariants.labelMedium}
+                color={theme.colors.labelLight}
+              >
+                {props.extraInfoTxt}
+              </CustomText>
+            </View>
+          )}
+          {showError && (
+            <View style={styles.bottomLayout}>
+              <CustomText
+                variant={TextVariants.labelMedium}
+                color={
+                  error?.message
+                    ? theme.colors.error
+                    : theme.colors.onSurfaceVariant
+                }
+              >
+                {error?.message
+                  ? error?.message
+                  : props.helperTxt
+                  ? props.helperTxt
+                  : ''}
+              </CustomText>
+            </View>
+          )}
+        </View>
+      )}
+    />
+  );
+};
+
+const makeStyles = <TFieldValues extends FieldValues>(
+  theme: CustomTheme,
+  props: Props<TFieldValues>,
+) =>
   StyleSheet.create({
     heading: {
       paddingLeft: 5,
@@ -435,6 +436,9 @@ const makeStyles = (theme: CustomTheme, props: Props) =>
       paddingBottom: props.prefixIcon || props.suffixIcon ? 0 : 5,
       paddingLeft: props.prefixIcon ? 10 : 5,
       paddingRight: props.suffixIcon ? 10 : 5,
+    },
+    paddingRight: {
+      paddingRight: 25,
     },
     outlineStyle: {
       borderRadius: props.borderRadius
@@ -482,4 +486,10 @@ const makeStyles = (theme: CustomTheme, props: Props) =>
     },
   });
 
-export default memo(FormTextInput);
+type FormTextInputComponent = <TFieldValues extends FieldValues>(
+  props: Props<TFieldValues> & React.RefAttributes<RNTextInput>,
+) => React.ReactElement | null;
+
+const FormTextInput = forwardRef(FormTextInputBase) as FormTextInputComponent;
+
+export default memo(FormTextInput) as FormTextInputComponent;
