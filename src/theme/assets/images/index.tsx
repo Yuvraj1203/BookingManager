@@ -3,6 +3,7 @@ import {
   CirclePlus,
   IndianRupee,
   Plus,
+  Trash2,
   Wallet,
 } from 'lucide-react-native';
 
@@ -171,9 +172,11 @@ export const Images = {
   tickCircle: require('../images/images/tickCircle.svg'),
   aboutUs: require('../images/images/aboutUs.svg'),
   mousePointer: require('../images/images/mousePointer.svg'),
+  flagIndia: require('../images/images/flagIndia.png'),
   Wallet: Wallet,
   Plus: Plus,
   Camera: Camera,
   CirclePlus: CirclePlus,
   IndianRupee: IndianRupee,
+  Trash: Trash2,
 };

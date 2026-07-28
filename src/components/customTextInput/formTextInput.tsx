@@ -130,6 +130,7 @@ type Props<TFieldValues extends FieldValues> = {
   showErrorIcon?: boolean;
   labelVariant?: TextVariants;
   isRequired?: boolean;
+  prefixTapStyle?: StyleProp<TextStyle>;
 };
 
 const FormTextInputBase = <TFieldValues extends FieldValues>(
@@ -242,6 +243,31 @@ const FormTextInputBase = <TFieldValues extends FieldValues>(
             <></>
           )}
           <View pointerEvents={enabled ? 'auto' : 'none'}>
+            {props.prefixIcon != null &&
+            props.prefixIcon.type === ImageType.luicide ? (
+              <View style={[styles.prefixIcon, props.prefixTapStyle]}>
+                {props.prefixIcon.luicideIcon}
+              </View>
+            ) : (
+              (props.prefixIcon?.type === ImageType.png ||
+                props.prefixIcon?.type === ImageType.svg) && (
+                <View style={[styles.prefixIcon, props.prefixTapStyle]}>
+                  <Tap style={styles.prefixTap} onPress={props.prefixIcon?.tap}>
+                    <CustomImage
+                      source={props.prefixIcon?.source}
+                      color={
+                        props.prefixIcon?.color
+                          ? props.prefixIcon.color
+                          : undefined
+                      }
+                      type={props.prefixIcon?.type}
+                      resizeMode={props.prefixIcon?.resizeMode}
+                      style={[styles.prefixIconImage, props.prefixIcon?.style]}
+                    />
+                  </Tap>
+                </View>
+              )
+            )}
             <TextInput
               ref={ref}
               mode={mode}
@@ -302,25 +328,6 @@ const FormTextInputBase = <TFieldValues extends FieldValues>(
               }}
               maxFontSizeMultiplier={1}
             />
-            {props.prefixIcon != null && (
-              <Tap onPress={props.prefixIcon.tap} style={styles.prefixIcon}>
-                {props.prefixIcon.type === ImageType.luicide ? (
-                  props.prefixIcon.luicideIcon
-                ) : (
-                  <CustomImage
-                    source={props.prefixIcon.source}
-                    color={
-                      props.prefixIcon.color
-                        ? props.prefixIcon.color
-                        : theme.colors.onSurfaceVariant
-                    }
-                    type={props.prefixIcon.type}
-                    resizeMode={props.prefixIcon.resizeMode}
-                    style={styles.prefixIconImage}
-                  />
-                )}
-              </Tap>
-            )}
             {error?.message && showErrorIcon ? (
               <Tap style={styles.suffixIcon}>
                 <CustomImage
@@ -458,6 +465,9 @@ const makeStyles = <TFieldValues extends FieldValues>(
       justifyContent: 'center',
       top: '50%',
       transform: [{ translateY: '-50%' }],
+    },
+    prefixTap: {
+      marginTop: 3,
     },
     prefixIconImage: {
       height: 20,

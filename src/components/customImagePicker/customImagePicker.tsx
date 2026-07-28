@@ -5,6 +5,7 @@ import { StyleSheet } from 'react-native';
 import {
   CameraOptions,
   ImageLibraryOptions,
+  ImagePickerResponse,
   launchCamera,
   launchImageLibrary,
 } from 'react-native-image-picker';
@@ -13,6 +14,7 @@ import { CustomActionSheet } from '../customActionSheet/customActionSheet';
 type Props = {
   showPicker: boolean;
   setShowPicker: (value: boolean) => void;
+  mediaList: (value: ImagePickerResponse) => void;
 };
 
 const cameraOptions: CameraOptions = {
@@ -30,7 +32,11 @@ const fileOptions: ImageLibraryOptions = {
   quality: 0.8,
 };
 
-type PickerSource = 'camera' | 'gallery' | 'file';
+enum PickerSourceEnum {
+  Camera = 'Camera',
+  Gallery = 'Gallery',
+  File = 'File',
+}
 
 const CustomImagePicker = ({ ...props }: Props) => {
   const theme = useTheme(); // theme
@@ -40,31 +46,33 @@ const CustomImagePicker = ({ ...props }: Props) => {
   const { t } = useTranslation();
 
   const launchPicker = async (
-    source: PickerSource,
+    source: PickerSourceEnum,
     // onChange: (value: string) => void,
   ) => {
-    const result = await (source === 'camera'
+    const result = await (source === PickerSourceEnum.Camera
       ? launchCamera(cameraOptions)
-      : launchImageLibrary(source === 'file' ? fileOptions : galleryOptions));
+      : launchImageLibrary(
+          source === PickerSourceEnum.File ? fileOptions : galleryOptions,
+        ));
 
     if (result.didCancel || result.errorCode) return;
 
-    // const uri = result.assets?.[0]?.uri;
-    // if (uri) onChange(uri);
+    const uri = result.assets?.[0]?.uri;
+    if (uri) props.mediaList(result);
   };
 
   const getOptions = () => [
     {
       label: t('TakePhoto'),
-      onPress: () => launchPicker('camera'),
+      onPress: () => launchPicker(PickerSourceEnum.Camera),
     },
     {
       label: t('ChooseFromGallery'),
-      onPress: () => launchPicker('gallery'),
+      onPress: () => launchPicker(PickerSourceEnum.Gallery),
     },
     {
       label: t('ChooseFile'),
-      onPress: () => launchPicker('file'),
+      onPress: () => launchPicker(PickerSourceEnum.File),
     },
   ];
 

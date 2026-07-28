@@ -1,11 +1,13 @@
 import {
   CurrencyFormInput,
   CustomButton,
+  CustomImage,
   CustomImagePicker,
   CustomMenu,
   CustomText,
   Dragger,
   FormTextInput,
+  ImageType,
   MenuActionWithHandler,
   SafeScreen,
   Tap,
@@ -26,6 +28,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { ImagePickerResponse } from 'react-native-image-picker';
 import { addBookingSchema, AddBookingSchemaType } from './addBooking.schema';
 
 //id for receiving data back as two
@@ -66,6 +69,9 @@ export const AddBooking = () => {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState<Date>();
 
+  /** selected images */
+  const [selectedImages, setSelectedImages] = useState<ImagePickerResponse[]>();
+
   /** menu data for status */
   const menuActions: MenuActionWithHandler[] = [
     {
@@ -92,11 +98,50 @@ export const AddBooking = () => {
   /** use form declaration */
   const { control, handleSubmit, setValue } = useForm<AddBookingSchemaType>({
     defaultValues: {
+      clientName: '',
+      mobile: '',
+      date: '',
+      time: '',
       duration: '1',
       horses: '1',
+      venue: '',
+      addOns: '',
+      totalAmount: '',
+      advancePaid: '',
+      status: StatusEnum.Confirmed,
+      notes: '',
     },
     resolver: zodResolver(addBookingSchema),
   });
+
+  /** handle media for image picker */
+  const handleMediaList = (mediaList: ImagePickerResponse) => {
+    setSelectedImages(prev => {
+      const newUri = mediaList.assets?.[0]?.uri;
+
+      const alreadyExists = prev?.some(
+        item => item.assets?.[0]?.uri === newUri,
+      );
+
+      if (alreadyExists) {
+        return prev;
+      }
+
+      return prev ? [...prev, mediaList] : [mediaList];
+    });
+    console.log('mediaList=>', JSON.stringify(mediaList));
+  };
+
+  /** delete media */
+  const handleRemove = (mediaItem: ImagePickerResponse) => {
+    setSelectedImages(prev => {
+      if (!prev) return prev;
+
+      const removeUri = mediaItem.assets?.[0]?.uri;
+
+      return prev.filter(item => item.assets?.[0]?.uri !== removeUri);
+    });
+  };
 
   /** receive value from date picker */
   const { receiveDataBack } = useReturnDataContext();
@@ -181,6 +226,10 @@ export const AddBooking = () => {
                 inputMode={InputModes.phone}
                 maxLength={10}
                 style={styles.field}
+                prefixIcon={{
+                  source: Images.flagIndia,
+                  type: ImageType.png,
+                }}
               />
               <View style={styles.flexRow}>
                 <Tap containerStyle={styles.flex} onPress={openDatePicker}>
@@ -276,18 +325,55 @@ export const AddBooking = () => {
                 maxLines={4}
                 style={styles.field}
               />
-
-              <Tap
-                onPress={() => setShowPicker(true)}
-                style={styles.imagePickerTap}
-              >
-                <Images.CirclePlus
-                  size={40}
-                  strokeWidth={1.5}
-                  color={theme.colors.onSurface}
-                />
-                <CustomText>{t('UploadImage')}</CustomText>
-              </Tap>
+              {selectedImages && selectedImages?.length > 0 ? (
+                <View style={styles.imagesContainer}>
+                  {selectedImages.map((item, index) => {
+                    const image = item.assets?.at(0);
+                    return (
+                      <Tap
+                        onPress={() => setShowPicker(true)}
+                        style={styles.selectedImageTap}
+                        key={index}
+                      >
+                        <Images.Trash
+                          color={theme.colors.danger}
+                          size={20}
+                          style={styles.trash}
+                          onPress={() => handleRemove(item)}
+                        />
+                        <CustomImage
+                          source={{
+                            uri: image?.uri,
+                          }}
+                          style={styles.renderImage}
+                        />
+                      </Tap>
+                    );
+                  })}
+                  <Tap
+                    onPress={() => setShowPicker(true)}
+                    style={[styles.selectedImageTap, styles.addSelectedImage]}
+                  >
+                    <Images.CirclePlus
+                      size={40}
+                      strokeWidth={1.5}
+                      color={theme.colors.onSurface}
+                    />
+                  </Tap>
+                </View>
+              ) : (
+                <Tap
+                  onPress={() => setShowPicker(true)}
+                  style={styles.imagePickerTap}
+                >
+                  <Images.CirclePlus
+                    size={40}
+                    strokeWidth={1.5}
+                    color={theme.colors.onSurface}
+                  />
+                  <CustomText>{t('UploadImage')}</CustomText>
+                </Tap>
+              )}
             </ScrollView>
           </View>
 
@@ -301,6 +387,7 @@ export const AddBooking = () => {
         <CustomImagePicker
           showPicker={showPicker}
           setShowPicker={setShowPicker}
+          mediaList={handleMediaList}
         />
       </KeyboardAvoidingView>
     </SafeScreen>
@@ -338,6 +425,18 @@ const makeStyles = (theme: CustomTheme) =>
       gap: 15,
       flex: 1,
     },
+    renderImage: {
+      width: 80,
+      height: 80,
+      borderRadius: theme.inputRoundness,
+    },
+    imagesContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-around',
+      gap: 10,
+      marginBottom: 10,
+    },
     imagePickerTap: {
       borderWidth: 1,
       borderStyle: 'dashed',
@@ -348,5 +447,27 @@ const makeStyles = (theme: CustomTheme) =>
       alignItems: 'center',
       justifyContent: 'center',
       gap: 10,
+    },
+    selectedImageTap: {
+      borderRadius: theme.inputRoundness,
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: 80,
+      height: 80,
+      borderWidth: 1,
+    },
+    addSelectedImage: {
+      borderStyle: 'dashed',
+      borderRadius: theme.inputRoundness,
+    },
+    trash: {
+      position: 'absolute',
+      right: 6,
+      top: 6,
+      borderRadius: theme.inputRoundness,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.colors.surfaceDisabled,
+      zIndex: 99,
     },
   });
