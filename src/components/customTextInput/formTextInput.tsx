@@ -284,7 +284,12 @@ const FormTextInputBase = <TFieldValues extends FieldValues>(
                   minHeight: inputHeight.current,
                   fontSize: props.textSize,
                 },
-                maxLines ? { maxHeight: maxLines * 50 } : {},
+                maxLines
+                  ? {
+                      maxHeight: maxLines * 50,
+                      paddingTop: multiLine ? 1 * 5 : undefined,
+                    }
+                  : {},
               ]}
               contentStyle={[
                 styles.content,

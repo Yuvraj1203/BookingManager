@@ -2,8 +2,11 @@ import {
   CurrencyFormInput,
   CustomButton,
   CustomImagePicker,
+  CustomMenu,
   CustomText,
+  Dragger,
   FormTextInput,
+  MenuActionWithHandler,
   SafeScreen,
   Tap,
 } from '@/components';
@@ -21,17 +24,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  Dimensions,
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { addBookingSchema, AddBookingSchemaType } from './addBooking.schema';
-
-const { height } = Dimensions.get('screen');
 
 //id for receiving data back as two
 enum DatePickerEnum {
@@ -42,6 +37,13 @@ enum DatePickerEnum {
 enum DateFormatEnum {
   ShortMonth = 'MMM DD,YYYY',
   HourMinute = 'hh:mm A',
+}
+
+enum StatusEnum {
+  Pending = 'Pending',
+  Confirmed = 'Confirmed',
+  Completed = 'Completed',
+  Cancelled = 'Cancelled',
 }
 
 export const AddBooking = () => {
@@ -64,6 +66,29 @@ export const AddBooking = () => {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState<Date>();
 
+  /** menu data for status */
+  const menuActions: MenuActionWithHandler[] = [
+    {
+      id: StatusEnum.Pending,
+      title: StatusEnum.Pending,
+    },
+    {
+      id: StatusEnum.Confirmed,
+      title: StatusEnum.Confirmed,
+    },
+    {
+      id: StatusEnum.Completed,
+      title: StatusEnum.Completed,
+    },
+    {
+      id: StatusEnum.Cancelled,
+      title: StatusEnum.Cancelled,
+      attributes: {
+        destructive: true,
+      },
+    },
+  ];
+
   /** use form declaration */
   const { control, handleSubmit, setValue } = useForm<AddBookingSchemaType>({
     defaultValues: {
@@ -77,7 +102,6 @@ export const AddBooking = () => {
   const { receiveDataBack } = useReturnDataContext();
 
   receiveDataBack('AddBooking', (data: CustomDatePickerReturnProp) => {
-    console.log('this is your data=>', data.id, data.selectedDate);
     if (data.selectedDate) {
       if (data.id === DatePickerEnum.Date) {
         setSelectedDate(data.selectedDate);
@@ -137,9 +161,7 @@ export const AddBooking = () => {
         })}
       >
         <View style={styles.main}>
-          <View style={styles.dragger}>
-            <></>
-          </View>
+          <Dragger />
           <View style={styles.container} collapsable={false}>
             <ScrollView
               style={styles.mainContainer}
@@ -229,12 +251,21 @@ export const AddBooking = () => {
                   style={[styles.field, styles.flex]}
                 />
               </View>
-              <FormTextInput
-                control={control}
-                name={'status'}
-                placeholder={t('Status')}
-                label={t('Status')}
-                style={styles.field}
+
+              <CustomMenu
+                actions={menuActions}
+                onCommonPress={id => {
+                  setValue('status', id);
+                }}
+                trigger={
+                  <FormTextInput
+                    control={control}
+                    name={'status'}
+                    placeholder={t('Status')}
+                    label={t('Status')}
+                    style={styles.field}
+                  />
+                }
               />
               <FormTextInput
                 control={control}
@@ -281,7 +312,6 @@ const makeStyles = (theme: CustomTheme) =>
     main: {
       flex: 1,
       paddingTop: 10,
-      height: height,
     },
     flex: {
       flex: 1,
@@ -292,14 +322,6 @@ const makeStyles = (theme: CustomTheme) =>
     mainContainer: {
       flex: 1,
       paddingHorizontal: 10,
-    },
-    dragger: {
-      alignSelf: 'center',
-      height: 4,
-      width: 50,
-      backgroundColor: theme.colors.surfaceDisabled,
-      borderRadius: theme.extraRoundness,
-      marginBottom: 20,
     },
     buttonContainer: {
       boxShadow: theme.upperBoxShadow,

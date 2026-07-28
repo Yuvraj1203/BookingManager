@@ -6,9 +6,11 @@ export { default as CustomDatePicker } from './customDatePicker/customDatePicker
 export * from './customImage/customImage';
 export * from './customImagePicker/customImagePicker';
 export { default as CustomImagePicker } from './customImagePicker/customImagePicker';
+export * from './customMenu/customMenu';
 export * from './customText/customText';
 export { default as CustomTextInput } from './customTextInput/customTextInput';
 export { default as FormTextInput } from './customTextInput/formTextInput';
+export * from './dragger/dragger';
 export * from './safeArea/safeArea';
 export * from './shadow/shadow';
 export * from './tap/tap';

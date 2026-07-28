@@ -44,16 +44,10 @@ const CustomDatePicker = () => {
     params.date ?? new Date(),
   );
 
-  console.log('selectedDate:', selectedDate);
-  console.log('params:', params);
-  console.log('parentScreen:', params?.parentScreen);
-  console.log('title:', params?.title);
-
   /** Added by @Yuvraj 27-03-2025 ---> send data the data to be send on parent (FYN-6016)*/
   const { sendDataBack } = useReturnDataContext();
 
   const handleConfirm = () => {
-    console.log('sending the date', selectedDate);
     sendDataBack(params.parentScreen, {
       selectedDate: selectedDate,
       id: params.title ?? params.title,
@@ -74,11 +68,9 @@ const CustomDatePicker = () => {
         maximumDate={params.maxDate}
         minimumDate={params.minDate}
         onConfirm={dateValue => {
-          console.log('is date changing? onConfirm', dateValue);
           setSelectedDate(dateValue);
         }}
         onDateChange={dateValue => {
-          console.log('is date changing?', dateValue);
           setSelectedDate(dateValue);
         }}
         onStateChange={value => {
