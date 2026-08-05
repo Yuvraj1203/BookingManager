@@ -18,7 +18,7 @@ export type {
 } from './customDatePicker.types';
 
 export type CustomDatePickerReturnProp = {
-  selectedDate: Date;
+  selectedDate: string;
   id: string;
 };
 
@@ -40,16 +40,19 @@ const CustomDatePicker = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [selectedDate, setSelectedDate] = useState<Date>(
-    params.date ?? new Date(),
-  );
+  // Parse string ISO / number timestamp back into Date instances safely
+  const initialDate = params.date ? new Date(params.date) : new Date();
+  const maximumDate = params.maxDate ? new Date(params.maxDate) : undefined;
+  const minimumDate = params.minDate ? new Date(params.minDate) : undefined;
+
+  const [selectedDate, setSelectedDate] = useState<Date>(initialDate);
 
   /** Added by @Yuvraj 27-03-2025 ---> send data the data to be send on parent (FYN-6016)*/
   const { sendDataBack } = useReturnDataContext();
 
   const handleConfirm = () => {
     sendDataBack(params.parentScreen, {
-      selectedDate: selectedDate,
+      selectedDate: selectedDate.toISOString(),
       id: params.title ?? params.title,
     } as CustomDatePickerReturnProp);
     navigation.goBack();
@@ -65,8 +68,8 @@ const CustomDatePicker = () => {
       <DatePicker
         mode={mode}
         date={selectedDate}
-        maximumDate={params.maxDate}
-        minimumDate={params.minDate}
+        maximumDate={maximumDate}
+        minimumDate={minimumDate}
         onConfirm={dateValue => {
           setSelectedDate(dateValue);
         }}

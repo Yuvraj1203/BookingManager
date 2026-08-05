@@ -10,9 +10,9 @@ export enum DatePickerMode {
 export type CustomDatePickerProps = {
   mode?: DatePickerMode;
   title?: string;
-  date?: Date;
-  minDate?: Date;
-  maxDate?: Date;
+  date?: string;
+  minDate?: string;
+  maxDate?: string;
   // called with the picked date when the user confirms, then the sheet
   // navigates back on its own - callers don't need to call goBack themselves
   parentScreen: keyof RootStackParamList | keyof DrawerStackParamList;

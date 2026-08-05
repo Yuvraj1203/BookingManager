@@ -1,11 +1,13 @@
 import { ButtonIconsProps, CustomButton, SafeScreen, Tap } from '@/components';
-import { useAppLanguageStore } from '@/store';
+import { useAppLanguageStore, useBookingStore } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { useAppNavigation } from '@/utils/navigationUtils';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { DashboardCard } from './dashboardCard';
+
+export const DASHBOARD_IMAGE_SIZE = 20;
 
 export const Dashboard = () => {
   /**to get the default theme of app */
@@ -21,6 +23,9 @@ export const Dashboard = () => {
   const navigation = useAppNavigation();
 
   const setLang = useAppLanguageStore(state => state.changeAppLanguage);
+
+  /** state for the data */
+  const getAllBookings = useBookingStore().bookings;
 
   const buttonPlus = ({ size, color }: ButtonIconsProps) => {
     return <Images.Plus size={size} color={color} />;
@@ -39,22 +44,27 @@ export const Dashboard = () => {
             <DashboardCard
               image={Images.calendar}
               title={t('ThisMonth')}
-              value={'4'}
-              valueUnit={'Bookings'}
+              value={getAllBookings.length.toString() ?? 0}
+              valueUnit={t('Bookings')}
               color={theme.colors.onPrimary}
             />
           </Tap>
           <Tap
             shadow={true}
-            onPress={() => console.log('hi')}
+            // onPress={() => console.log('hi')}
             containerStyle={styles.cards}
             style={[styles.card, styles.secondaryBg]}
           >
             <DashboardCard
-              image={Images.mousePointer}
-              title={'THis Month'}
+              icon={
+                <Images.Revenue
+                  size={DASHBOARD_IMAGE_SIZE}
+                  color={theme.colors.onSecondary}
+                />
+              }
+              title={t('RevenueMO')}
               value={'4'}
-              valueUnit={'Bookings'}
+              valueUnit={''}
               color={theme.colors.onSecondary}
             />
           </Tap>
@@ -63,26 +73,31 @@ export const Dashboard = () => {
         <View style={styles.cardsContainer}>
           <Tap
             shadow={true}
-            onPress={() => console.log('hi')}
+            // onPress={() => console.log('hi')}
             containerStyle={styles.cards}
             style={[styles.card, styles.outlined]}
           >
             <DashboardCard
-              image={Images.calendar}
-              title={'THis Month'}
+              icon={
+                <Images.Wallet
+                  size={DASHBOARD_IMAGE_SIZE}
+                  color={theme.colors.onSurface}
+                />
+              }
+              title={t('Pending')}
               value={'4'}
-              valueUnit={'Bookings'}
+              valueUnit={t('ToCollect')}
             />
           </Tap>
           <Tap
             shadow={true}
-            onPress={() => console.log('hi')}
+            // onPress={() => console.log('hi')}
             containerStyle={styles.cards}
             style={[styles.card, styles.outlined]}
           >
             <DashboardCard
-              image={Images.calendar}
-              title={'THis Month'}
+              image={Images.aboutUs}
+              title={t('Pending')}
               value={'4'}
               valueUnit={t('Bookings')}
             />
@@ -120,7 +135,6 @@ const makeStyle = (theme: CustomTheme) =>
       flex: 1,
     },
     card: {
-      // flex: 1,
       padding: 20,
     },
     primaryBg: {

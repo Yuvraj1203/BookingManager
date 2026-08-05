@@ -24,5 +24,8 @@
   "Cancel": "Cancel",
   "UploadImage": "Upload Image",
   "Confirm": "Confirm",
-  "SelectStatus": "Select Status"
+  "SelectStatus": "Select Status",
+  "RevenueMO": "Revenue (Month)",
+  "Pending": "Pending",
+  "ToCollect": "to collect"
 }

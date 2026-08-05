@@ -1,7 +1,5 @@
-import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import React, { memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
 import {
   CameraOptions,
   ImageLibraryOptions,
@@ -15,6 +13,7 @@ type Props = {
   showPicker: boolean;
   setShowPicker: (value: boolean) => void;
   mediaList: (value: ImagePickerResponse) => void;
+  hasFile?: boolean;
 };
 
 const cameraOptions: CameraOptions = {
@@ -38,10 +37,10 @@ enum PickerSourceEnum {
   File = 'File',
 }
 
-const CustomImagePicker = ({ ...props }: Props) => {
-  const theme = useTheme(); // theme
+const CustomImagePicker = ({ hasFile = false, ...props }: Props) => {
+  // const theme = useTheme(); // theme
 
-  const styles = makeStyles(theme); // access StylesSheet with theme implemented
+  // const styles = makeStyles(theme); // access StylesSheet with theme implemented
 
   const { t } = useTranslation();
 
@@ -70,10 +69,14 @@ const CustomImagePicker = ({ ...props }: Props) => {
       label: t('ChooseFromGallery'),
       onPress: () => launchPicker(PickerSourceEnum.Gallery),
     },
-    {
-      label: t('ChooseFile'),
-      onPress: () => launchPicker(PickerSourceEnum.File),
-    },
+    ...(hasFile
+      ? [
+          {
+            label: t('ChooseFile'),
+            onPress: () => launchPicker(PickerSourceEnum.File),
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -85,11 +88,11 @@ const CustomImagePicker = ({ ...props }: Props) => {
   );
 };
 
-const makeStyles = (theme: CustomTheme) =>
-  StyleSheet.create({
-    main: {
-      backgroundColor: theme.colors.transparent,
-    },
-  });
+// const makeStyles = (theme: CustomTheme) =>
+//   StyleSheet.create({
+//     main: {
+//       backgroundColor: theme.colors.transparent,
+//     },
+//   });
 
 export default memo(CustomImagePicker);

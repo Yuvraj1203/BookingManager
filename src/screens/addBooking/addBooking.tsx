@@ -15,6 +15,7 @@ import {
 import { CustomDatePickerReturnProp } from '@/components/customDatePicker/customDatePicker';
 import { DatePickerMode } from '@/components/customDatePicker/customDatePicker.types';
 import { InputModes } from '@/components/customTextInput/formTextInput';
+import { useBookingStore } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import {
@@ -29,7 +30,11 @@ import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { ImagePickerResponse } from 'react-native-image-picker';
-import { addBookingSchema, AddBookingSchemaType } from './addBooking.schema';
+import {
+  AddBookingPayload,
+  addBookingSchema,
+  AddBookingSchemaType,
+} from './addBooking.schema';
 
 //id for receiving data back as two
 enum DatePickerEnum {
@@ -62,15 +67,20 @@ export const AddBooking = () => {
   /** for navigation */
   const navigation = useAppNavigation();
 
+  /** booking store */
+  const addBooking = useBookingStore().addBooking;
+
   /** image picker state */
   const [showPicker, setShowPicker] = useState(false);
 
   /** date ad time state */
-  const [selectedDate, setSelectedDate] = useState<Date>();
-  const [selectedTime, setSelectedTime] = useState<Date>();
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedTime, setSelectedTime] = useState<Date>(new Date());
 
   /** selected images */
-  const [selectedImages, setSelectedImages] = useState<ImagePickerResponse[]>();
+  const [selectedImages, setSelectedImages] = useState<ImagePickerResponse[]>(
+    [],
+  );
 
   /** menu data for status */
   const menuActions: MenuActionWithHandler[] = [
@@ -149,7 +159,7 @@ export const AddBooking = () => {
   receiveDataBack('AddBooking', (data: CustomDatePickerReturnProp) => {
     if (data.selectedDate) {
       if (data.id === DatePickerEnum.Date) {
-        setSelectedDate(data.selectedDate);
+        setSelectedDate(new Date(data.selectedDate));
         const formattedDate = formatDate({
           date: data.selectedDate,
           // parseFormat: 'YYYY-MM-DDTHH:mm:ss',
@@ -157,7 +167,7 @@ export const AddBooking = () => {
         });
         setValue('date', formattedDate);
       } else if (data.id === DatePickerEnum.Time) {
-        setSelectedTime(data.selectedDate);
+        setSelectedTime(new Date(data.selectedDate));
         const formattedDate = formatDate({
           date: data.selectedDate,
           // parseFormat: 'YYYY-MM-DDTHH:mm:ss',
@@ -173,7 +183,7 @@ export const AddBooking = () => {
     navigation.navigate('CustomDatePicker', {
       mode: DatePickerMode.date,
       title: t(DatePickerEnum.Date),
-      date: selectedDate ?? new Date(),
+      date: selectedDate.toISOString(),
       parentScreen: 'AddBooking',
     });
   };
@@ -183,15 +193,30 @@ export const AddBooking = () => {
     navigation.navigate('CustomDatePicker', {
       mode: DatePickerMode.time,
       title: t(DatePickerEnum.Time),
-      date: selectedTime ?? new Date(),
+      date: selectedTime.toISOString(),
       parentScreen: 'AddBooking',
     });
   };
 
   /** save the booking */
   const onSubmit = (data: AddBookingSchemaType) => {
-    // TODO: persist booking once a booking store/API is available
-    console.log('booking', data);
+    console.log('payload', data, 'data.totalAmount=>', data.totalAmount);
+    const payload: AddBookingPayload = {
+      clientName: data.clientName,
+      mobile: data.mobile,
+      date: selectedDate.toString(),
+      time: selectedTime.toString(),
+      horses: data.horses,
+      venue: data.venue,
+      totalAmount: data.totalAmount,
+      duration: data.duration,
+      addOns: data.addOns,
+      advancePaid: data.advancePaid,
+      status: data.status,
+      notes: data.notes,
+      images: selectedImages,
+    };
+    addBooking(payload);
     navigation.goBack();
   };
 
@@ -313,6 +338,7 @@ export const AddBooking = () => {
                     placeholder={t('Status')}
                     label={t('Status')}
                     style={styles.field}
+                    enabled={false}
                   />
                 }
               />
@@ -330,36 +356,40 @@ export const AddBooking = () => {
                   {selectedImages.map((item, index) => {
                     const image = item.assets?.at(0);
                     return (
-                      <Tap
-                        onPress={() => setShowPicker(true)}
-                        style={styles.selectedImageTap}
-                        key={index}
-                      >
-                        <Images.Trash
-                          color={theme.colors.danger}
-                          size={20}
-                          style={styles.trash}
-                          onPress={() => handleRemove(item)}
-                        />
-                        <CustomImage
-                          source={{
-                            uri: image?.uri,
-                          }}
-                          style={styles.renderImage}
-                        />
-                      </Tap>
+                      <View key={index} style={styles.imageItemContainer}>
+                        <Tap
+                          onPress={() => setShowPicker(true)}
+                          style={styles.selectedImageTap}
+                        >
+                          <View style={styles.trash}>
+                            <Images.Trash
+                              color={theme.colors.danger}
+                              size={20}
+                              onPress={() => handleRemove(item)}
+                            />
+                          </View>
+                          <CustomImage
+                            source={{
+                              uri: image?.uri,
+                            }}
+                            style={styles.renderImage}
+                          />
+                        </Tap>
+                      </View>
                     );
                   })}
-                  <Tap
-                    onPress={() => setShowPicker(true)}
-                    style={[styles.selectedImageTap, styles.addSelectedImage]}
-                  >
-                    <Images.CirclePlus
-                      size={40}
-                      strokeWidth={1.5}
-                      color={theme.colors.onSurface}
-                    />
-                  </Tap>
+                  <View style={styles.imageItemContainer}>
+                    <Tap
+                      onPress={() => setShowPicker(true)}
+                      style={[styles.selectedImageTap, styles.addSelectedImage]}
+                    >
+                      <Images.CirclePlus
+                        size={40}
+                        strokeWidth={1.5}
+                        color={theme.colors.onSurface}
+                      />
+                    </Tap>
+                  </View>
                 </View>
               ) : (
                 <Tap
@@ -398,7 +428,7 @@ const makeStyles = (theme: CustomTheme) =>
   StyleSheet.create({
     main: {
       flex: 1,
-      paddingTop: 10,
+      paddingTop: Platform.select({ ios: 10, android: 0 }),
     },
     flex: {
       flex: 1,
@@ -433,9 +463,7 @@ const makeStyles = (theme: CustomTheme) =>
     imagesContainer: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      justifyContent: 'space-around',
-      gap: 10,
-      marginBottom: 10,
+      marginBottom: 20,
     },
     imagePickerTap: {
       borderWidth: 1,
@@ -452,18 +480,23 @@ const makeStyles = (theme: CustomTheme) =>
       borderRadius: theme.inputRoundness,
       alignItems: 'center',
       justifyContent: 'center',
-      width: 80,
-      height: 80,
+      aspectRatio: 1,
       borderWidth: 1,
     },
     addSelectedImage: {
       borderStyle: 'dashed',
       borderRadius: theme.inputRoundness,
+      borderColor: theme.colors.outline,
+    },
+    imageItemContainer: {
+      width: '25%',
+      padding: 6,
     },
     trash: {
       position: 'absolute',
-      right: 6,
-      top: 6,
+      padding: 5,
+      right: 3,
+      top: 3,
       borderRadius: theme.inputRoundness,
       alignItems: 'center',
       justifyContent: 'center',

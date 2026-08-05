@@ -1,5 +1,6 @@
 import {
   Camera,
+  ChartNoAxesCombined,
   CirclePlus,
   IndianRupee,
   Plus,
@@ -179,4 +180,5 @@ export const Images = {
   CirclePlus: CirclePlus,
   IndianRupee: IndianRupee,
   Trash: Trash2,
+  Revenue: ChartNoAxesCombined,
 };

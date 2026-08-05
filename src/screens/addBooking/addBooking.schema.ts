@@ -1,3 +1,4 @@
+import { ImagePickerResponse } from 'react-native-image-picker';
 import { z } from 'zod';
 
 export const addBookingSchema = z.object({
@@ -16,3 +17,9 @@ export const addBookingSchema = z.object({
 });
 
 export type AddBookingSchemaType = z.infer<typeof addBookingSchema>;
+
+// Option A: Using Type Intersection (&)
+// This merges all properties of AddBookingSchemaType with the images field
+export type AddBookingPayload = AddBookingSchemaType & {
+  images: ImagePickerResponse[];
+};
