@@ -68,7 +68,7 @@ export const AddBooking = () => {
   const navigation = useAppNavigation();
 
   /** booking store */
-  const addBooking = useBookingStore().addBooking;
+  const bookingStore = useBookingStore();
 
   /** image picker state */
   const [showPicker, setShowPicker] = useState(false);
@@ -108,15 +108,15 @@ export const AddBooking = () => {
   /** use form declaration */
   const { control, handleSubmit, setValue } = useForm<AddBookingSchemaType>({
     defaultValues: {
-      clientName: '',
-      mobile: '',
+      clientName: 'Raju',
+      mobile: '67863868',
       date: '',
       time: '',
       duration: '1',
       horses: '1',
-      venue: '',
+      venue: 'Star',
       addOns: '',
-      totalAmount: '',
+      totalAmount: '567',
       advancePaid: '',
       status: StatusEnum.Confirmed,
       notes: '',
@@ -200,7 +200,6 @@ export const AddBooking = () => {
 
   /** save the booking */
   const onSubmit = (data: AddBookingSchemaType) => {
-    console.log('payload', data, 'data.totalAmount=>', data.totalAmount);
     const payload: AddBookingPayload = {
       clientName: data.clientName,
       mobile: data.mobile,
@@ -216,7 +215,8 @@ export const AddBooking = () => {
       notes: data.notes,
       images: selectedImages,
     };
-    addBooking(payload);
+    console.log('payload=>', payload);
+    bookingStore.addBooking(payload);
     navigation.goBack();
   };
 

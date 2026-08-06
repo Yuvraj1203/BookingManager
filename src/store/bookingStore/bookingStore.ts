@@ -1,5 +1,5 @@
 import { zustandStorage } from '@/App';
-import { nanoid } from 'nanoid';
+import { nanoid } from 'nanoid/non-secure';
 import { ImagePickerResponse } from 'react-native-image-picker';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -18,7 +18,7 @@ export type BookingType = {
   advancePaid?: string;
   status?: string;
   notes?: string;
-  images: ImagePickerResponse[];
+  images?: ImagePickerResponse[];
   createdAt: string;
   updatedAt: string;
 };

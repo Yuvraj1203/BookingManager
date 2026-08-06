@@ -10,7 +10,7 @@ export const addBookingSchema = z.object({
   horses: z.string().min(1, 'Horse count is mandatory'),
   venue: z.string().min(1, 'Venue is mandatory'),
   addOns: z.string().optional(),
-  totalAmount: z.string(),
+  totalAmount: z.string().min(1, 'Amount is mandatory'),
   advancePaid: z.string().optional(),
   status: z.string().optional(),
   notes: z.string().optional(),

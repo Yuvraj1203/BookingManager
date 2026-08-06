@@ -1,10 +1,17 @@
-import { ButtonIconsProps, CustomButton, SafeScreen, Tap } from '@/components';
-import { useAppLanguageStore, useBookingStore } from '@/store';
+import {
+  ButtonIconsProps,
+  CustomButton,
+  CustomText,
+  SafeScreen,
+  Tap,
+} from '@/components';
+import { BookingType, useAppLanguageStore, useBookingStore } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { useAppNavigation } from '@/utils/navigationUtils';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 import { DashboardCard } from './dashboardCard';
 
 export const DASHBOARD_IMAGE_SIZE = 20;
@@ -25,11 +32,24 @@ export const Dashboard = () => {
   const setLang = useAppLanguageStore(state => state.changeAppLanguage);
 
   /** state for the data */
-  const getAllBookings = useBookingStore().bookings;
+  const bookingStore = useBookingStore();
 
   const buttonPlus = ({ size, color }: ButtonIconsProps) => {
     return <Images.Plus size={size} color={color} />;
   };
+
+  const renderList = (item: BookingType) =>
+    // item: number
+    {
+      return (
+        <>
+          <View>
+            <CustomText>{item.clientName}</CustomText>
+            <CustomText>{item.totalAmount}</CustomText>
+          </View>
+        </>
+      );
+    };
 
   return (
     <SafeScreen style={styles.main}>
@@ -44,7 +64,7 @@ export const Dashboard = () => {
             <DashboardCard
               image={Images.calendar}
               title={t('ThisMonth')}
-              value={getAllBookings.length.toString() ?? 0}
+              value={bookingStore.bookings.length.toString() ?? 0}
               valueUnit={t('Bookings')}
               color={theme.colors.onPrimary}
             />
@@ -111,6 +131,11 @@ export const Dashboard = () => {
       >
         {t('QuickAddBooking')}
       </CustomButton>
+
+      <FlatList
+        data={bookingStore.bookings}
+        renderItem={({ item }) => renderList(item)}
+      />
     </SafeScreen>
   );
 };
