@@ -27,5 +27,9 @@
   "SelectStatus": "स्थिति चुनें",
   "RevenueMO": "राजस्व (महीना)",
   "Pending": "लंबित",
-  "ToCollect": "इकट्ठा करने के लिए"
+  "ToCollect": "इकट्ठा करने के लिए",
+  "Next7Days": "अगले 7 दिन",
+  "Today": "आज",
+  "Upcoming": "आगामी",
+  "NothingScheduledYet": "अभी तक कुछ भी निर्धारित नहीं है."
 }

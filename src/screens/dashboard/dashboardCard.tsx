@@ -14,9 +14,10 @@ type DashboardCardProps = {
   color?: ColorValue;
   image?: typeof Images;
   title: string;
-  value: string;
+  value: string | number;
   valueUnit?: string;
   icon?: ReactNode;
+  valueIcon?: ReactNode;
 };
 
 export const DashboardCard = ({ ...props }: DashboardCardProps) => {
@@ -45,9 +46,12 @@ export const DashboardCard = ({ ...props }: DashboardCardProps) => {
           {props.title.toUpperCase()}
         </CustomText>
       </View>
-      <CustomText variant={TextVariants.headlineLarge} color={props.color}>
-        {props.value}
-      </CustomText>
+      <View style={styles.cardContent}>
+        {props.valueIcon && <>{props.valueIcon}</>}
+        <CustomText variant={TextVariants.headlineLarge} color={props.color}>
+          {props.value}
+        </CustomText>
+      </View>
       <CustomText
         maxLines={1}
         ellipsis={TextEllipsis.tail}
@@ -65,6 +69,11 @@ const makeStyle = () =>
     cardHeader: {
       flexDirection: 'row',
       gap: 10,
+      alignItems: 'center',
+    },
+    cardContent: {
+      flexDirection: 'row',
+      gap: 2,
       alignItems: 'center',
     },
     cardsImage: {

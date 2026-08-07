@@ -27,5 +27,9 @@
   "SelectStatus": "Select Status",
   "RevenueMO": "Revenue (Month)",
   "Pending": "Pending",
-  "ToCollect": "to collect"
+  "ToCollect": "to collect",
+  "Next7Days": "Next 7 days",
+  "Today": "Today",
+  "Upcoming": "Upcoming",
+  "NothingScheduledYet": "Nothing scheduled yet."
 }

@@ -2,6 +2,7 @@ export { default as CurrencyFormInput } from './currencyInput/currencyFormInput'
 export { default as CurrencyInput } from './currencyInput/currencyInput';
 export * from './customActionSheet/customActionSheet';
 export * from './customButton/customButton';
+export * from './customChip/customChip';
 export { default as CustomDatePicker } from './customDatePicker/customDatePicker';
 export * from './customImage/customImage';
 export * from './customImagePicker/customImagePicker';
