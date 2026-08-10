@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx eslint *)",
+      "Bash(npx tsc *)",
+      "Bash(yarn ios *)",
+      "Bash(xargs -I{} basename {})",
+      "Bash(export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8)",
+      "Bash(rm -rf ios/Pods)",
+      "Bash(yarn ios:update)",
+      "Bash(cd ios *)",
+      "Read(//Users/yuvrajsinghrathore/Library/Developer/Xcode/DerivedData/**)"
+    ]
+  }
+}

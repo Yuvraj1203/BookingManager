@@ -31,5 +31,10 @@
   "Next7Days": "अगले 7 दिन",
   "Today": "आज",
   "Upcoming": "आगामी",
-  "NothingScheduledYet": "अभी तक कुछ भी निर्धारित नहीं है."
+  "NothingScheduledYet": "अभी तक कुछ भी निर्धारित नहीं है.",
+  "ThisWeek": "इस सप्ताह",
+  "PendingCollection": "लंबित संग्रह",
+  "PleaseEnterValidValue": "कृपया एक मान्य मान दर्ज करें",
+  "LastSixMonths": "पिछले 6 महीने",
+  "CurrentWeek": "चालू सप्ताह"
 }

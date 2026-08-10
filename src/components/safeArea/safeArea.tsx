@@ -10,7 +10,9 @@ type Props = {
   bottom?: boolean;
 };
 
-export function SafeScreen({ top = true, bottom = true, ...props }: Props) {
+export function SafeScreen({ 
+  top = false, //make true if has customHeader
+   bottom = true, ...props }: Props) {
   const theme = useTheme(); // theme
   // const insets = useSafeAreaInsets(); // Handle status/navigation bar safely
   const styles = makeStyles(theme); // access StylesSheet with theme implemented

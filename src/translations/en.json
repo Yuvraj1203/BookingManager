@@ -31,5 +31,10 @@
   "Next7Days": "Next 7 days",
   "Today": "Today",
   "Upcoming": "Upcoming",
-  "NothingScheduledYet": "Nothing scheduled yet."
+  "NothingScheduledYet": "Nothing scheduled yet.",
+  "ThisWeek": "This week",
+  "PendingCollection": "Pending collection",
+  "PleaseEnterValidValue": "Please enter a valid value",
+  "LastSixMonths": "Last 6 Months",
+  "CurrentWeek": "Current week"
 }

@@ -13,7 +13,7 @@ import { DashboardCard } from './dashboardCard';
 
 export const DASHBOARD_IMAGE_SIZE = 20;
 
-export const Dashboard = () => {
+const Dashboard = () => {
   /**to get the default theme of app */
   const theme = useTheme();
 
@@ -53,14 +53,14 @@ export const Dashboard = () => {
     const {
       currentMonthBookings,
       upcomingBookings,
-      currentRevenue,
+      currentMonthRevenue,
       totalPendingAmount,
       todayBookings,
     } = getBookingAnalytics(allBookings);
 
     console.log(allBookings, currentMonthBookings);
 
-    setCurrentMonthRevenue(currentRevenue); //set current month revenue
+    setCurrentMonthRevenue(currentMonthRevenue); //set current month revenue
     setPendingAmount(totalPendingAmount); //set total pending ruppes
     setNext7DaysBookings(upcomingBookings); //set the next 7 days bookings
     setTodaysBookings(todayBookings); //todayBookings
@@ -156,6 +156,7 @@ export const Dashboard = () => {
         <CustomButton
           onPress={() => navigation.navigate('AddBooking')}
           iconElement={buttonPlus}
+          style={styles.addButton}
         >
           {t('QuickAddBooking')}
         </CustomButton>
@@ -179,7 +180,6 @@ const makeStyle = (theme: CustomTheme) =>
     container: {
       flex: 1,
       paddingHorizontal: 10,
-      gap: 15,
     },
     flex: {
       flex: 1,
@@ -208,4 +208,9 @@ const makeStyle = (theme: CustomTheme) =>
       borderColor: theme.colors.surfaceVariant,
       backgroundColor: theme.colors.background,
     },
+    addButton:{
+      marginVertical:15,
+    }
   });
+
+export default Dashboard

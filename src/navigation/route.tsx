@@ -1,5 +1,5 @@
 import { CustomDatePicker } from '@/components';
-import { AddBooking, SplashScreen } from '@/screens';
+import { AddBooking, BookingDetail, SplashScreen } from '@/screens';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { DrawerRoute } from './drawerRoute';
 import { RootStackParamList } from './types';
@@ -16,6 +16,14 @@ const RootNavigator = () => {
       <RootStack.Screen
         name="DrawerRoute"
         component={DrawerRoute}
+        options={{
+          headerLargeTitleEnabled: true,
+        }}
+      />
+
+      <RootStack.Screen
+        name="BookingDetail"
+        component={BookingDetail}
         options={{
           headerLargeTitleEnabled: true,
         }}

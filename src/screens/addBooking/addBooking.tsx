@@ -22,7 +22,7 @@ import {
   useAppNavigation,
   useReturnDataContext,
 } from '@/utils/navigationUtils';
-import { formatDate } from '@/utils/utils';
+import { formatDate, showSnackbar } from '@/utils/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -200,6 +200,22 @@ export const AddBooking = () => {
 
   /** save the booking */
   const onSubmit = (data: AddBookingSchemaType) => {
+    //for total amount
+    const strippedTotal = (data.totalAmount || '0').replace(/,/g, '');
+    const numTotal = parseFloat(strippedTotal);
+    if (isNaN(numTotal)) {
+      showSnackbar(t('PleaseEnterValidValue'), 'danger');
+      return;
+    }
+
+    //for pending amount
+    const strippedPaid = (data.advancePaid || '0').replace(/,/g, '');
+    const numPaid = parseFloat(strippedPaid);
+    if (isNaN(numPaid)) {
+      showSnackbar(t('PleaseEnterValidValue'), 'danger');
+      return;
+    }
+
     const payload: AddBookingPayload = {
       clientName: data.clientName,
       mobile: data.mobile,
@@ -207,10 +223,10 @@ export const AddBooking = () => {
       time: selectedTime.toString(),
       horses: data.horses,
       venue: data.venue,
-      totalAmount: data.totalAmount,
+      totalAmount: String(numTotal),
       duration: data.duration,
       addOns: data.addOns,
-      advancePaid: data.advancePaid,
+      advancePaid: String(numPaid),
       status: data.status,
       notes: data.notes,
       images: selectedImages,

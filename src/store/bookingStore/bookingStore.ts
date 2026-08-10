@@ -23,6 +23,12 @@ export type BookingType = {
   updatedAt: string;
 };
 
+export type CurrentWeekBookingDetails = BookingType & {
+  day: string;
+  dayShort: string;
+  isToday: boolean;
+};
+
 export type AddBookingInput = Omit<
   BookingType,
   'id' | 'createdAt' | 'updatedAt'

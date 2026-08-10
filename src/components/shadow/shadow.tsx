@@ -14,7 +14,7 @@ export const Shadow = (props: ShadowProps) => {
   const styles = makeStyle(theme);
 
   return (
-    <View style={[props.style, styles.shadowContainer]}>{props.children}</View>
+    <View style={[styles.shadowContainer, props.style]}>{props.children}</View>
   );
 };
 
@@ -22,14 +22,7 @@ const makeStyle = (theme: CustomTheme) =>
   StyleSheet.create({
     shadowContainer: {
       padding: 10,
-      shadowColor: theme.colors.outline,
-      shadowOffset: {
-        width: 0,
-        height: 4,
-      },
-      shadowOpacity: 0.2,
-      shadowRadius: 10,
-      elevation: 8, // Android
+      boxShadow: theme.boxShadow,
       borderRadius: theme.roundness,
     },
   });
