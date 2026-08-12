@@ -2,7 +2,10 @@ import {
   Camera,
   ChartNoAxesCombined,
   CirclePlus,
+  Clock,
   IndianRupee,
+  MapPin,
+  Phone,
   Plus,
   Trash2,
   Wallet,
@@ -181,4 +184,7 @@ export const Images = {
   IndianRupee: IndianRupee,
   Trash: Trash2,
   Revenue: ChartNoAxesCombined,
+  Clock: Clock,
+  Location: MapPin,
+  Phone: Phone,
 };

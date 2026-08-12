@@ -11,6 +11,7 @@ export * from './customMenu/customMenu';
 export * from './customText/customText';
 export { default as CustomTextInput } from './customTextInput/customTextInput';
 export { default as FormTextInput } from './customTextInput/formTextInput';
+export { default as Divider } from './divider/divider';
 export * from './dragger/dragger';
 export * from './safeArea/safeArea';
 export * from './shadow/shadow';

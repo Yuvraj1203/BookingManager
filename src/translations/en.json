@@ -36,5 +36,6 @@
   "PendingCollection": "Pending collection",
   "PleaseEnterValidValue": "Please enter a valid value",
   "LastSixMonths": "Last 6 Months",
-  "CurrentWeek": "Current week"
+  "CurrentWeek": "Current week",
+  "Due": "Due"
 }
