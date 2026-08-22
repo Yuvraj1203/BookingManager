@@ -26,6 +26,10 @@ const themeDestructure = () => {
   let darkBoxShadow = '0 1px 3px 0 #FFFFFF1A, 0 1px 2px -1px #FFFFFF14';
   let upperLightShadow = '0 -3px 3px -0.5px #0000001a';
   let upperDarkShadow = '0 -3px 3px -0.5px #FFFFFF14';
+  let lightInsetShadow =
+    'inset 0 1px 3px 0 #0000001a, inset 0 1px 2px -1px #0000001a';
+  let darkInsetShadow =
+    'inset 0 1px 3px 0 #FFFFFF1A, inset 0 1px 2px -1px #FFFFFF14';
 
   //for fonts
   const fonts = {
@@ -59,6 +63,7 @@ const themeDestructure = () => {
     inputRoundness: inputRoundness,
     boxShadow: lightBoxShadow,
     upperBoxShadow: upperLightShadow,
+    insetShadow: lightInsetShadow,
     colors: {
       ...DefaultThemeLight.colors,
       ...NavigationLightTheme.colors,
@@ -97,6 +102,9 @@ const themeDestructure = () => {
       outOfOfcLevel2: '#A066F6',
       outOfOfcLevel1: '#F5EDFF',
       lightPrimaryContainer: '#85f9c025',
+
+      background: '#F5F5F5',
+      onDark: '#F5F5F5',
     },
   };
 
@@ -110,6 +118,7 @@ const themeDestructure = () => {
     inputRoundness: inputRoundness,
     boxShadow: darkBoxShadow,
     upperBoxShadow: upperDarkShadow,
+    insetShadow: darkInsetShadow,
     colors: {
       ...DefaultThemeDark.colors,
       ...NavigationDarkTheme.colors,
@@ -148,6 +157,9 @@ const themeDestructure = () => {
       outOfOfcLevel2: '#A066F6',
       outOfOfcLevel1: '#F5EDFF',
       lightPrimaryContainer: '#85f9c025',
+
+      background: '#333333',
+      onDark: '#F5F5F5',
     },
   };
 
@@ -175,6 +187,7 @@ export interface CustomTheme extends MD3Theme {
   inputRoundness: number;
   boxShadow: string;
   upperBoxShadow: string;
+  insetShadow: string;
   colors: MD3Theme['colors'] &
     NavigationTheme['colors'] & {
       primaryHighlight1: string;
@@ -210,6 +223,8 @@ export interface CustomTheme extends MD3Theme {
       green: string;
       outOfOfcLevel1: string;
       outOfOfcLevel2: string;
+
+      onDark: string;
     };
   fonts: MD3Typescale & {
     regular: FontStyle;

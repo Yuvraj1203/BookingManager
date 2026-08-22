@@ -37,5 +37,16 @@
   "PleaseEnterValidValue": "कृपया एक मान्य मान दर्ज करें",
   "LastSixMonths": "पिछले 6 महीने",
   "CurrentWeek": "चालू सप्ताह",
-  "Due": "देय"
+  "Due": "देय",
+  "Total": "कुल",
+  "BalanceDue": "शेष राशि",
+  "Call": "पुकारना",
+  "WhatsApp": "WhatsApp",
+  "PreviewPDF": "पीडीएफ का पूर्वावलोकन करें",
+  "SharePDF": "पीडीएफ साझा करें",
+  "Delete": "मिटाना",
+  "Update": "अद्यतन",
+  "Phone": "फ़ोन",
+  "Services": "सेवाएं",
+  "EnterBiggerTotalThanAdvance": "'अग्रिम' से अधिक 'कुल' दर्ज करें"
 }

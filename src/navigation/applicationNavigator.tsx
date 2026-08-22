@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { StyleSheet } from 'react-native';
+import FlashMessage from 'react-native-flash-message';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PaperProvider } from 'react-native-paper';
 import RootNavigator from './route';
@@ -30,6 +31,7 @@ const ApplicationNavigator = () => {
           <PaperProvider theme={appTheme}>
             <NavigationContainer theme={appTheme}>
               <RootNavigator />
+              <FlashMessage position="bottom" style={{ marginBottom: 64 }} />
             </NavigationContainer>
           </PaperProvider>
         </ReturnScreenDataProvider>

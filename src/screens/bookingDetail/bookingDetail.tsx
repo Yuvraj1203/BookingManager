@@ -1,26 +1,40 @@
-import { SafeScreen, Tap } from '@/components';
-import { useBookingStore } from '@/store';
+import {
+  CustomText,
+  SafeScreen,
+  Shadow,
+  Tap,
+  TextVariants,
+} from '@/components';
+import { BookingType, useBookingStore } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { useAppNavigation, useAppRoute } from '@/utils/navigationUtils';
-import { StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
+import DetailCard from './detailCard';
 
 export type BookingDetailProps = {
-  id: string;
+  cardItem: BookingType;
 };
 
 const BookingDetail = () => {
   /** for getting the parameter */
-  const param = useAppRoute('BookingDetail').params;
+  const cardItem = useAppRoute('BookingDetail').params.cardItem;
 
   /**to get the default theme of app */
   const theme = useTheme();
 
+  const insets = useSafeAreaInsets();
+
   /** theme integration in styles */
-  const styles = makeStyle(theme);
+  const styles = makeStyle(theme, insets);
 
   /** for navigation */
   const navigation = useAppNavigation();
+
+  /** for tranlations */
+  const { t } = useTranslation();
 
   /** booking store */
   const bookingStore = useBookingStore();
@@ -30,21 +44,197 @@ const BookingDetail = () => {
     bookingStore.deleteBooking(id);
     navigation.goBack();
   };
+
+  /** color icons in action data */
+  const actionDataIconColor = theme.colors.onSurfaceVariant;
+  const actionDataIconSize = 18;
+
+  /** action data array */
+  const actionData = [
+    {
+      label: t('Call'),
+      icon: (
+        <Images.Phone color={actionDataIconColor} size={actionDataIconSize} />
+      ),
+      bg: theme.colors.surface,
+      onTap: () => {},
+    },
+    {
+      label: t('WhatsApp'),
+      icon: (
+        <Images.Message color={actionDataIconColor} size={actionDataIconSize} />
+      ),
+      bg: theme.colors.surface,
+      onTap: () => {},
+    },
+    {
+      label: t('PreviewPDF'),
+      icon: (
+        <Images.File color={actionDataIconColor} size={actionDataIconSize} />
+      ),
+      bg: theme.colors.background,
+      onTap: () => {},
+    },
+    {
+      label: t('SharePDF'),
+      icon: (
+        <Images.Share color={actionDataIconColor} size={actionDataIconSize} />
+      ),
+      bg: theme.colors.background,
+      onTap: () => {},
+    },
+  ];
+
+  const highlightedFieldsData = [
+    {
+      label: t('Phone'),
+      value: cardItem.mobile,
+    },
+    {
+      label: t('Horses'),
+      value: cardItem.horses,
+    },
+    {
+      label: t('Services'),
+      value: cardItem.addOns || '-',
+    },
+    {
+      label: t('AdvancePaid'),
+      value: cardItem.advancePaid,
+    },
+    {
+      label: t('Notes'),
+      value: cardItem.notes || '-',
+    },
+  ];
+
   return (
-    <SafeScreen>
-      <Tap style={styles.main} onPress={() => handleDelete(param.id)}>
-        <Images.Trash />
-      </Tap>
+    <SafeScreen style={styles.main}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <DetailCard cardItem={cardItem} />
+
+        <View style={styles.actionContainer}>
+          {actionData.map((item, index) => {
+            return (
+              <View key={index} style={styles.actionBoxContainer}>
+                <Shadow
+                  style={[styles.actionBox, { backgroundColor: item.bg }]}
+                >
+                  {item.icon}
+                  <CustomText>{item.label}</CustomText>
+                </Shadow>
+              </View>
+            );
+          })}
+        </View>
+
+        <View style={styles.highlightedFieldContainer}>
+          {highlightedFieldsData.map((item, index) => {
+            return (
+              <View key={index} style={styles.highlightedFields}>
+                <CustomText>{item.label}</CustomText>
+                <CustomText
+                  variant={TextVariants.bodyLarge}
+                  color={theme.colors.onSurface}
+                >
+                  {item.value}
+                </CustomText>
+              </View>
+            );
+          })}
+        </View>
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <Tap
+          containerStyle={styles.tap}
+          style={[styles.delete, styles.footerButton]}
+          onPress={() => handleDelete(cardItem.id)}
+        >
+          {/* <Images.Trash /> */}
+          <CustomText color={theme.colors.onDark}>{t('Delete')}</CustomText>
+        </Tap>
+
+        <Tap
+          containerStyle={styles.tap}
+          style={[styles.update, styles.footerButton]}
+          onPress={() => navigation.navigate('AddBooking', { cardItem })}
+        >
+          {/* <Images.Trash /> */}
+          <CustomText color={theme.colors.onSurfaceVariant}>
+            {t('Update')}
+          </CustomText>
+        </Tap>
+      </View>
     </SafeScreen>
   );
 };
 
-const makeStyle = (theme: CustomTheme) =>
+const makeStyle = (theme: CustomTheme, insets: EdgeInsets) =>
   StyleSheet.create({
+    flex: {
+      flex: 1,
+    },
     main: {
-      height: 100,
-      width: 100,
+      flex: 1,
+      paddingVertical: 10,
+    },
+    scrollContent: {
+      paddingBottom: 100,
+      paddingHorizontal: 10,
+    },
+    tap: {
+      flex: 1,
+    },
+    actionContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      marginVertical: 15,
+    },
+    actionBoxContainer: {
+      width: '50%',
+      padding: 10,
+    },
+    actionBox: {
+      flexDirection: 'row',
+      gap: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    footer: {
+      width: '100%',
+      position: 'absolute',
+      bottom: 0,
+      boxShadow: theme.upperBoxShadow,
+      flexDirection: 'row',
+      alignItems: 'center',
+      // justifyContent: 'space-between',
+      gap: 10,
+      paddingBottom: insets.bottom,
+      padding: 10,
+      backgroundColor: theme.colors.surface,
+    },
+    footerButton: {
+      padding: 10,
+      alignItems: 'center',
+    },
+    delete: {
       backgroundColor: theme.colors.danger,
+    },
+    update: {
+      borderWidth: 1,
+      borderColor: theme.colors.onSurfaceVariant,
+    },
+    highlightedFieldContainer: {
+      gap: 15,
+    },
+    highlightedFields: {
+      boxShadow: theme.insetShadow,
+      borderRadius: theme.roundness,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      gap: 3,
+      backgroundColor: theme.colors.background,
     },
   });
 

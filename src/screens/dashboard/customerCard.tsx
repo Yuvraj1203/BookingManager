@@ -9,7 +9,7 @@ import { BookingType } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { useAppNavigation } from '@/utils/navigationUtils';
-import { formatDate } from '@/utils/utils';
+import { formatCurrency, formatDate } from '@/utils/utils';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
@@ -39,7 +39,7 @@ export const CustomerCard = ({ cardItem }: CustomerCardProps) => {
   /** handle press */
   const handlePress = () => {
     navigation.navigate('BookingDetail', {
-      id: cardItem.id,
+      cardItem: cardItem,
     });
   };
 
@@ -69,22 +69,22 @@ export const CustomerCard = ({ cardItem }: CustomerCardProps) => {
       </View>
 
       <View style={styles.detailRow}>
-        <Images.Clock size={16} />
+        <Images.Clock size={16} color={theme.colors.onSurfaceVariant} />
         <CustomText>{eventDate}</CustomText>
         <CustomText>{'∙'}</CustomText>
         <CustomText>{eventTime}</CustomText>
       </View>
 
       <View style={styles.detailRow}>
-        <Images.Location size={16} />
+        <Images.Location size={16} color={theme.colors.onSurfaceVariant} />
         <CustomText>{cardItem.venue}</CustomText>
       </View>
 
-      <Divider style={styles.divider} />
+      <Divider style={styles.divider} width={StyleSheet.hairlineWidth} />
 
       <View style={styles.header}>
         <View style={styles.detailRow}>
-          <Images.Phone size={16} />
+          <Images.Phone size={16} color={theme.colors.onSurfaceVariant} />
           <CustomText>{cardItem.mobile}</CustomText>
         </View>
 
@@ -99,7 +99,7 @@ export const CustomerCard = ({ cardItem }: CustomerCardProps) => {
               strokeWidth={2.75}
               color={theme.colors.onSurfaceVariant}
             />
-            {cardItem.totalAmount}
+            {formatCurrency(cardItem.totalAmount)}
           </CustomText>
           <CustomText color={theme.colors.statusBusyColor}>
             {t('Due')}
@@ -109,7 +109,9 @@ export const CustomerCard = ({ cardItem }: CustomerCardProps) => {
               fontWeight={600}
               strokeWidth={2.75}
             />
-            {Number(cardItem.totalAmount) - Number(cardItem.advancePaid)}
+            {formatCurrency(
+              `${Number(cardItem.totalAmount) - Number(cardItem.advancePaid)}`,
+            )}
           </CustomText>
         </View>
       </View>

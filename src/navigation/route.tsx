@@ -1,15 +1,32 @@
-import { CustomDatePicker } from '@/components';
+import { CustomDatePicker, Tap } from '@/components';
 import { AddBooking, BookingDetail, SplashScreen } from '@/screens';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Images } from '@/theme/assets/images';
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import { DrawerRoute } from './drawerRoute';
 import { RootStackParamList } from './types';
+
+type RootNavigation = NativeStackNavigationProp<RootStackParamList>;
 
 const RootNavigator = () => {
   const RootStack = createNativeStackNavigator<RootStackParamList>();
 
+  const headerBackButton = (navigation: RootNavigation) => {
+    return (
+      <Tap onPress={() => navigation.goBack()}>
+        <Images.Back />
+      </Tap>
+    );
+  };
+
   return (
     <RootStack.Navigator
-      screenOptions={{ headerShown: false }}
+      screenOptions={({ navigation }: { navigation: RootNavigation }) => ({
+        headerShown: false,
+        headerLeft: () => headerBackButton(navigation),
+      })}
       initialRouteName="SplashScreen"
     >
       <RootStack.Screen name="SplashScreen" component={SplashScreen} />
@@ -25,7 +42,9 @@ const RootNavigator = () => {
         name="BookingDetail"
         component={BookingDetail}
         options={{
-          headerLargeTitleEnabled: true,
+          // headerLargeTitleEnabled: true,
+          headerShown: true,
+          title: 'Booking Details',
         }}
       />
       {/* <RootStack.Screen name="Profile" component={Profile} /> */}

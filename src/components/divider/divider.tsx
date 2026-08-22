@@ -3,21 +3,25 @@ import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 type DividerProps = {
   style?: StyleProp<ViewStyle>;
+  width?: number;
 };
 
-const Divider = ({ ...props }: DividerProps) => {
+const Divider = ({ width = 1, ...props }: DividerProps) => {
   /**to get the default theme of app */
   const theme = useTheme();
 
   /** theme integration in styles */
   const styles = makeStyles(theme);
-  return <View style={[styles.divider, props.style]}></View>;
+  return (
+    <View
+      style={[styles.divider, props.style, { borderTopWidth: width }]}
+    ></View>
+  );
 };
 
 const makeStyles = (theme: CustomTheme) =>
   StyleSheet.create({
     divider: {
-      borderTopWidth: StyleSheet.hairlineWidth,
       borderTopColor: theme.colors.border,
       borderBottomColor: theme.colors.border,
       borderLeftColor: theme.colors.border,

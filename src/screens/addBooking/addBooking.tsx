@@ -15,21 +15,27 @@ import {
 import { CustomDatePickerReturnProp } from '@/components/customDatePicker/customDatePicker';
 import { DatePickerMode } from '@/components/customDatePicker/customDatePicker.types';
 import { InputModes } from '@/components/customTextInput/formTextInput';
-import { useBookingStore } from '@/store';
+import { EditBookingInput, useBookingStore } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import {
   useAppNavigation,
+  useAppRoute,
   useReturnDataContext,
 } from '@/utils/navigationUtils';
-import { formatDate, showSnackbar } from '@/utils/utils';
+import { formatCurrency, formatDate } from '@/utils/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { ImagePickerResponse } from 'react-native-image-picker';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import {
   AddBookingPayload,
   addBookingSchema,
@@ -54,7 +60,14 @@ enum StatusEnum {
   Cancelled = 'Cancelled',
 }
 
+export type AddBookingProps = {
+  cardItem: EditBookingInput;
+};
+
 export const AddBooking = () => {
+  /** for getting the parameter */
+  const cardItem = useAppRoute('AddBooking').params?.cardItem;
+
   /**to get the default theme of app */
   const theme = useTheme();
 
@@ -72,6 +85,9 @@ export const AddBooking = () => {
 
   /** image picker state */
   const [showPicker, setShowPicker] = useState(false);
+
+  /** show error */
+  const [errorMsg, setErrorMsg] = useState<string>();
 
   /** date ad time state */
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -108,18 +124,18 @@ export const AddBooking = () => {
   /** use form declaration */
   const { control, handleSubmit, setValue } = useForm<AddBookingSchemaType>({
     defaultValues: {
-      clientName: 'Raju',
-      mobile: '67863868',
-      date: '',
-      time: '',
-      duration: '1',
-      horses: '1',
-      venue: 'Star',
-      addOns: '',
-      totalAmount: '567',
-      advancePaid: '',
-      status: StatusEnum.Confirmed,
-      notes: '',
+      clientName: cardItem?.clientName ?? '',
+      mobile: cardItem?.mobile ?? '',
+      date: cardItem?.date ?? '',
+      time: cardItem?.time ?? '',
+      duration: cardItem?.duration ?? '',
+      horses: cardItem?.horses ?? '',
+      venue: cardItem?.venue ?? '',
+      addOns: cardItem?.addOns ?? '',
+      totalAmount: formatCurrency(`${cardItem?.totalAmount}`) ?? '',
+      advancePaid: formatCurrency(`${cardItem?.advancePaid}`) ?? '',
+      status: cardItem?.status ?? StatusEnum.Confirmed,
+      notes: cardItem?.notes ?? '',
     },
     resolver: zodResolver(addBookingSchema),
   });
@@ -204,7 +220,7 @@ export const AddBooking = () => {
     const strippedTotal = (data.totalAmount || '0').replace(/,/g, '');
     const numTotal = parseFloat(strippedTotal);
     if (isNaN(numTotal)) {
-      showSnackbar(t('PleaseEnterValidValue'), 'danger');
+      setErrorMsg(t('PleaseEnterValidValue'));
       return;
     }
 
@@ -212,7 +228,13 @@ export const AddBooking = () => {
     const strippedPaid = (data.advancePaid || '0').replace(/,/g, '');
     const numPaid = parseFloat(strippedPaid);
     if (isNaN(numPaid)) {
-      showSnackbar(t('PleaseEnterValidValue'), 'danger');
+      setErrorMsg(t('PleaseEnterValidValue'));
+      return;
+    }
+
+    //total has to be greatter than advance
+    if (numTotal - numPaid < 0) {
+      setErrorMsg(t('EnterBiggerTotalThanAdvance'));
       return;
     }
 
@@ -231,10 +253,40 @@ export const AddBooking = () => {
       notes: data.notes,
       images: selectedImages,
     };
-    console.log('payload=>', payload);
-    bookingStore.addBooking(payload);
+
+    let bookingResponse;
+    if (cardItem?.id) {
+      bookingResponse = bookingStore.updateBooking(cardItem.id, payload);
+    } else {
+      bookingResponse = bookingStore.addBooking(payload);
+    }
     navigation.goBack();
+    navigation.navigate('BookingDetail', { cardItem: bookingResponse });
   };
+
+  /**animated style for error msg */
+  const errorHeight = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      height: withTiming(errorHeight.value, { duration: 500 }),
+    };
+  });
+
+  useEffect(() => {
+    if (!errorMsg) {
+      errorHeight.value = 1;
+      return;
+    }
+
+    errorHeight.value = 40;
+
+    const resetTimeout = setTimeout(() => {
+      setErrorMsg(undefined);
+    }, 3000);
+
+    return () => clearTimeout(resetTimeout);
+  }, [errorMsg]);
 
   return (
     <SafeScreen>
@@ -248,6 +300,13 @@ export const AddBooking = () => {
       >
         <View style={styles.main}>
           <Dragger />
+          <Animated.View style={[animatedStyle]}>
+            {errorMsg && (
+              <CustomText style={styles.errorText} color={theme.colors.danger}>
+                {errorMsg}
+              </CustomText>
+            )}
+          </Animated.View>
           <View style={styles.container} collapsable={false}>
             <ScrollView
               style={styles.mainContainer}
@@ -308,6 +367,7 @@ export const AddBooking = () => {
                   name={'horses'}
                   placeholder={t('Horses')}
                   label={t('Horses')}
+                  inputMode={InputModes.numeric}
                   style={[styles.field, styles.flex]}
                 />
               </View>
@@ -455,6 +515,9 @@ const makeStyles = (theme: CustomTheme) =>
     mainContainer: {
       flex: 1,
       paddingHorizontal: 10,
+    },
+    errorText: {
+      alignSelf: 'center',
     },
     buttonContainer: {
       boxShadow: theme.upperBoxShadow,

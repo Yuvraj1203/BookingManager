@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 export const addBookingSchema = z.object({
   clientName: z.string().min(1, 'Name is mandatory'),
-  mobile: z.string().min(1, 'Mobile number is mandatory'),
+  mobile: z.string().min(10, 'Number has to be 10 digits'),
   date: z.string().min(1, 'Date is mandatory'),
   time: z.string().min(1, 'Time is mandatory'),
   duration: z.string().optional(),

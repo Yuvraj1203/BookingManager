@@ -1,8 +1,8 @@
 export const Colors = {
   light: {
-    primary: '#2196F3',
+    primary: '#3f5fcc',
     onPrimary: '#FFFFFF',
-    primaryContainer: '#D0E4FF',
+    primaryContainer: '#DCE2FF',
     onPrimaryContainer: '#001E33',
     secondary: '#673AB7',
     onSecondary: '#FFFFFF',
@@ -43,10 +43,10 @@ export const Colors = {
   },
 
   dark: {
-    primary: '#A6CFFF',
-    onPrimary: '#00315C',
-    primaryContainer: '#004C91',
-    onPrimaryContainer: '#D0E4FF',
+    primary: '#00315C',
+    onPrimary: '#A6CFFF',
+    primaryContainer: '#D0E4FF',
+    onPrimaryContainer: '#004C91',
     secondary: '#C5B0FF',
     onSecondary: '#38006A',
     secondaryContainer: '#4F2688',

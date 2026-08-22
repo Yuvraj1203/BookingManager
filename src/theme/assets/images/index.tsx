@@ -1,12 +1,16 @@
 import {
   Camera,
   ChartNoAxesCombined,
+  ChevronLeft,
   CirclePlus,
   Clock,
+  FileText,
   IndianRupee,
   MapPin,
+  MessageCircle,
   Phone,
   Plus,
+  Share2,
   Trash2,
   Wallet,
 } from 'lucide-react-native';
@@ -187,4 +191,8 @@ export const Images = {
   Clock: Clock,
   Location: MapPin,
   Phone: Phone,
+  Back: ChevronLeft,
+  Message: MessageCircle,
+  Share: Share2,
+  File: FileText,
 };

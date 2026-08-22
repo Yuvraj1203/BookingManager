@@ -34,6 +34,10 @@ export type AddBookingInput = Omit<
   'id' | 'createdAt' | 'updatedAt'
 >;
 
+export type EditBookingInput = AddBookingInput & {
+  id: BookingType['id'];
+};
+
 export type UpdateBookingInput = Partial<AddBookingInput>;
 
 type BookingStoreProps = {
@@ -41,7 +45,7 @@ type BookingStoreProps = {
   addBooking: (value: AddBookingInput) => BookingType;
   getBookings: () => BookingType[];
   getBookingById: (id: string) => BookingType | undefined;
-  updateBooking: (id: string, value: UpdateBookingInput) => void;
+  updateBooking: (id: string, value: UpdateBookingInput) => BookingType;
   deleteBooking: (id: string) => void;
 };
 
@@ -68,13 +72,25 @@ export const useBookingStore = create<BookingStoreProps>()(
         get().bookings.find(booking => booking.id === id),
 
       updateBooking: (id: string, value: UpdateBookingInput) => {
-        set({
-          bookings: get().bookings.map(booking =>
-            booking.id === id
-              ? { ...booking, ...value, updatedAt: new Date().toISOString() }
-              : booking,
+        const booking = get().bookings.find(item => item.id === id);
+
+        if (!booking) {
+          throw new Error(`Booking with id ${id} not found`);
+        }
+
+        const updatedBooking: BookingType = {
+          ...booking,
+          ...value,
+          updatedAt: new Date().toISOString(),
+        };
+
+        set(state => ({
+          bookings: state.bookings.map(item =>
+            item.id === id ? updatedBooking : item,
           ),
-        });
+        }));
+
+        return updatedBooking;
       },
 
       deleteBooking: (id: string) => {

@@ -154,9 +154,12 @@ const Dashboard = () => {
         </View>
 
         <CustomButton
-          onPress={() => navigation.navigate('AddBooking')}
+          onPress={() => {
+            navigation.navigate('AddBooking');
+          }}
           iconElement={buttonPlus}
           style={styles.addButton}
+          textColor={theme.colors.onPrimary}
         >
           {t('QuickAddBooking')}
         </CustomButton>
@@ -206,11 +209,11 @@ const makeStyle = (theme: CustomTheme) =>
     outlined: {
       borderWidth: 1,
       borderColor: theme.colors.surfaceVariant,
-      backgroundColor: theme.colors.background,
+      backgroundColor: theme.colors.surface,
     },
-    addButton:{
-      marginVertical:15,
-    }
+    addButton: {
+      marginVertical: 15,
+    },
   });
 
-export default Dashboard
+export default Dashboard;

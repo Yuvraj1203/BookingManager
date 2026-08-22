@@ -37,5 +37,16 @@
   "PleaseEnterValidValue": "Please enter a valid value",
   "LastSixMonths": "Last 6 Months",
   "CurrentWeek": "Current week",
-  "Due": "Due"
+  "Due": "Due",
+  "Total": "Total",
+  "BalanceDue": "Balance due",
+  "Call": "Call",
+  "WhatsApp": "WhatsApp",
+  "PreviewPDF": "Preview PDF",
+  "SharePDF": "Share PDF",
+  "Delete": "Delete",
+  "Update": "Update",
+  "Phone": "Phone",
+  "Services": "Services",
+  "EnterBiggerTotalThanAdvance": "Enter greater 'TOTAL' than 'ADVANCE'"
 }

@@ -1,7 +1,8 @@
 import { useTheme } from '@/theme/themeProvider/paperTheme';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { Keyboard, Linking } from 'react-native';
+import { useEffect } from 'react';
+import { AppState, Keyboard, Linking, Platform } from 'react-native';
 import { MessageType, showMessage } from 'react-native-flash-message';
 import InAppBrowser from 'react-native-inappbrowser-reborn';
 
@@ -218,5 +219,26 @@ export const containsJavaScript = (input?: string): boolean => {
 export const hideKeyboard = () => {
   if (Keyboard.isVisible()) {
     Keyboard.dismiss();
+  }
+};
+
+/** added by @YUvraj 10-10-2025 --> dismiss the popup when security minimize popup shows */
+export const handlePopupDismiss = (shown: boolean, dimiss: () => void) => {
+  if (Platform.OS == 'ios') {
+    useEffect(() => {
+      if (shown) {
+        // closing all modal on background
+        const subscription = AppState.addEventListener(
+          'change',
+          nextAppState => {
+            dimiss();
+          },
+        );
+
+        return () => {
+          subscription.remove();
+        };
+      }
+    }, [shown]);
   }
 };
