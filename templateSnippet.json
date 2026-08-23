@@ -1,0 +1,43 @@
+{
+  "React Native Component": {
+    "body": [
+      "import { CustomText, SafeScreen } from '@/components';",
+      "import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';",
+      "import { useAppNavigation } from '@/utils/navigationUtils';",
+      "import { useTranslation } from 'react-i18next';",
+      "import { StyleSheet, View } from 'react-native';",
+      "",
+      "export const ${TM_FILENAME_BASE} = () => {",
+      "  /** to get the default theme of app */",
+      "  const theme = useTheme();",
+      "",
+      "  /** theme integration in styles */",
+      "  const styles = makeStyle(theme);",
+      "",
+      "  /** for translations */",
+      "  const { t } = useTranslation();",
+      "",
+      "  /** for navigation */",
+      "  const navigation = useAppNavigation();",
+      "",
+      "  return (",
+      "    <SafeScreen>",
+      "      <View style={styles.main}>",
+      "      </View>",
+      "    </SafeScreen>",
+      "  );",
+      "};",
+      "",
+      "const makeStyle = (theme: CustomTheme) =>",
+      "  StyleSheet.create({",
+      "    main: {",
+      "      flex: 1,",
+      "    },",
+      "  });",
+      "",
+      "export default ${TM_FILENAME_BASE};"
+    ],
+    "description": "React Native component template",
+    "prefix": "rnuv"
+  }
+}
