@@ -48,5 +48,16 @@
   "Update": "Update",
   "Phone": "Phone",
   "Services": "Services",
-  "EnterBiggerTotalThanAdvance": "Enter greater 'TOTAL' than 'ADVANCE'"
+  "EnterBiggerTotalThanAdvance": "Enter greater 'TOTAL' than 'ADVANCE'",
+  "BusinessName": "Business name",
+  "BusinessPhone": "Business phone",
+  "InvoicePrefix": "Invoice prefix",
+  "Currency": "Currency",
+  "Notifications": "Notifications",
+  "OneDayBeforeBooking": "1 day before booking",
+  "TwoHoursBeforeBooking": "2 hours before booking",
+  "RemindersLocalInfo": "Reminders are sent locally on your device. Keep the app installed for best reliability.",
+  "SaveSettings": "Save settings",
+  "DataStoredLocally": "Data is stored on this device. Cloud sync coming later.",
+  "SettingsSaved": "Settings saved"
 }

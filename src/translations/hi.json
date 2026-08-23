@@ -48,5 +48,16 @@
   "Update": "अद्यतन",
   "Phone": "फ़ोन",
   "Services": "सेवाएं",
-  "EnterBiggerTotalThanAdvance": "'अग्रिम' से अधिक 'कुल' दर्ज करें"
+  "EnterBiggerTotalThanAdvance": "'अग्रिम' से अधिक 'कुल' दर्ज करें",
+  "BusinessName": "व्यवसाय का नाम",
+  "BusinessPhone": "व्यवसाय फ़ोन नंबर",
+  "InvoicePrefix": "इनवॉइस प्रीफ़िक्स",
+  "Currency": "मुद्रा",
+  "Notifications": "सूचनाएं",
+  "OneDayBeforeBooking": "बुकिंग से 1 दिन पहले",
+  "TwoHoursBeforeBooking": "बुकिंग से 2 घंटे पहले",
+  "RemindersLocalInfo": "रिमाइंडर आपके डिवाइस से स्थानीय रूप से भेजे जाते हैं। सर्वोत्तम विश्वसनीयता के लिए ऐप इंस्टॉल रखें।",
+  "SaveSettings": "सेटिंग्स सहेजें",
+  "DataStoredLocally": "डेटा इस डिवाइस पर संग्रहीत है। क्लाउड सिंक बाद में आएगा।",
+  "SettingsSaved": "सेटिंग्स सहेजी गईं"
 }
