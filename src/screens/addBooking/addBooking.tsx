@@ -53,7 +53,7 @@ enum DateFormatEnum {
   HourMinute = 'hh:mm A',
 }
 
-enum StatusEnum {
+export enum StatusEnum {
   Pending = 'Pending',
   Confirmed = 'Confirmed',
   Completed = 'Completed',
@@ -484,7 +484,10 @@ export const AddBooking = () => {
           </View>
 
           <View style={styles.buttonContainer}>
-            <CustomButton onPress={handleSubmit(onSubmit)}>
+            <CustomButton
+              textColor={theme.colors.onPrimary}
+              onPress={handleSubmit(onSubmit)}
+            >
               {t('Save')}
             </CustomButton>
           </View>

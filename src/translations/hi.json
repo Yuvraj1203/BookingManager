@@ -59,5 +59,14 @@
   "RemindersLocalInfo": "रिमाइंडर आपके डिवाइस से स्थानीय रूप से भेजे जाते हैं। सर्वोत्तम विश्वसनीयता के लिए ऐप इंस्टॉल रखें।",
   "SaveSettings": "सेटिंग्स सहेजें",
   "DataStoredLocally": "डेटा इस डिवाइस पर संग्रहीत है। क्लाउड सिंक बाद में आएगा।",
-  "SettingsSaved": "सेटिंग्स सहेजी गईं"
+  "SettingsSaved": "सेटिंग्स सहेजी गईं",
+  "New": "नया",
+  "SearchBookingsPlaceholder": "नाम, फ़ोन, स्थान खोजें...",
+  "Results": "परिणाम",
+  "NoBookingsFound": "कोई बुकिंग नहीं मिली",
+  "Completed": "पूर्ण",
+  "Cancelled": "रद्द",
+  "PendingPay": "लंबित भुगतान",
+  "Amount": "राशि",
+  "Name": "नाम"
 }

@@ -44,7 +44,7 @@ export const Colors = {
 
   dark: {
     primary: '#00315C',
-    onPrimary: '#A6CFFF',
+    onPrimary: '#e6f1ff',
     primaryContainer: '#D0E4FF',
     onPrimaryContainer: '#004C91',
     secondary: '#C5B0FF',

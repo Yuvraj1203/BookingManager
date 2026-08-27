@@ -395,6 +395,9 @@ const makeStyles = (theme: CustomTheme, props: Props) =>
       position: 'absolute',
       top: '50%',
       transform: [{ translateY: '-50%' }],
+      // Paper's TextInput paints its own box after this sibling, so without
+      // a higher zIndex it visually covers the icon.
+      zIndex: 1,
     },
     prefixIconImage: {
       height: 20,
@@ -405,6 +408,7 @@ const makeStyles = (theme: CustomTheme, props: Props) =>
       position: 'absolute',
       top: '50%',
       transform: [{ translateY: '-50%' }],
+      zIndex: 1,
     },
     loadingIcon: {
       right: 10,

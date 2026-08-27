@@ -465,6 +465,9 @@ const makeStyles = <TFieldValues extends FieldValues>(
       justifyContent: 'center',
       top: '50%',
       transform: [{ translateY: '-50%' }],
+      // Paper's TextInput paints its own box after this sibling, so without
+      // a higher zIndex it visually covers the icon.
+      zIndex: 1,
     },
     prefixTap: {
       marginTop: 3,
@@ -479,6 +482,7 @@ const makeStyles = <TFieldValues extends FieldValues>(
       justifyContent: 'center',
       top: '50%',
       transform: [{ translateY: '-50%' }],
+      zIndex: 1,
     },
     loadingIcon: {
       right: 10,

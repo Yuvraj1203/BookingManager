@@ -10,7 +10,9 @@ import {
   MessageCircle,
   Phone,
   Plus,
+  Search,
   Share2,
+  SlidersHorizontal,
   Trash2,
   Wallet,
 } from 'lucide-react-native';
@@ -195,4 +197,6 @@ export const Images = {
   Message: MessageCircle,
   Share: Share2,
   File: FileText,
+  Search: Search,
+  Filter: SlidersHorizontal,
 };

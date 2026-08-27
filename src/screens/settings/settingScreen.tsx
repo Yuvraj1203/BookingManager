@@ -15,9 +15,11 @@ import { useSettingStore } from '@/store';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { showSnackbar } from '@/utils/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, RefreshControl, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Switch } from 'react-native-paper';
 import { SettingConfigSchemaType, settingConfigSchema } from './setting.schema';
@@ -44,6 +46,9 @@ export const SettingScreen = () => {
   /** setting store */
   const settingStore = useSettingStore();
 
+  /** Controls loading status for refreshing data. (FYN-4314)*/
+  const [loading, setLoading] = useState(false);
+
   /** currency menu actions */
   const currencyMenuActions: MenuActionWithHandler[] = CURRENCY_OPTIONS.map(
     item => ({
@@ -53,17 +58,44 @@ export const SettingScreen = () => {
   );
 
   /** form */
-  const { control, handleSubmit, setValue } = useForm<SettingConfigSchemaType>({
-    defaultValues: {
-      businessName: settingStore.businessName,
-      businessPhone: settingStore.businessPhone,
-      invoicePrefix: settingStore.invoicePrefix,
-      currency: settingStore.currency,
-      notifyOneDayBefore: settingStore.notifyOneDayBefore,
-      notifyTwoHoursBefore: settingStore.notifyTwoHoursBefore,
-    },
-    resolver: zodResolver(settingConfigSchema),
+  const { control, handleSubmit, setValue, reset } =
+    useForm<SettingConfigSchemaType>({
+      defaultValues: {
+        businessName: settingStore.businessName,
+        businessPhone: settingStore.businessPhone,
+        invoicePrefix: settingStore.invoicePrefix,
+        currency: settingStore.currency,
+        notifyOneDayBefore: settingStore.notifyOneDayBefore,
+        notifyTwoHoursBefore: settingStore.notifyTwoHoursBefore,
+      },
+      resolver: zodResolver(settingConfigSchema),
+    });
+
+  const getDefaultValues = (): SettingConfigSchemaType => ({
+    businessName: settingStore.businessName,
+    businessPhone: settingStore.businessPhone,
+    invoicePrefix: settingStore.invoicePrefix,
+    currency: settingStore.currency,
+    notifyOneDayBefore: settingStore.notifyOneDayBefore,
+    notifyTwoHoursBefore: settingStore.notifyTwoHoursBefore,
   });
+
+  /** reset on focus */
+  useFocusEffect(
+    useCallback(() => {
+      reset(getDefaultValues());
+
+      return () => {};
+    }, [
+      reset,
+      settingStore.businessName,
+      settingStore.businessPhone,
+      settingStore.invoicePrefix,
+      settingStore.currency,
+      settingStore.notifyOneDayBefore,
+      settingStore.notifyTwoHoursBefore,
+    ]),
+  );
 
   /** save the settings */
   const onSubmit = (data: SettingConfigSchemaType) => {
@@ -83,6 +115,16 @@ export const SettingScreen = () => {
       <ScrollView
         style={styles.mainContainer}
         automaticallyAdjustKeyboardInsets
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={() => {
+              setLoading(true);
+              reset();
+              setTimeout(() => setLoading(false), 1000);
+            }}
+          />
+        }
       >
         <FormTextInput
           control={control}
@@ -172,6 +214,7 @@ export const SettingScreen = () => {
         <CustomButton
           onPress={handleSubmit(onSubmit)}
           style={styles.saveButton}
+          textColor={theme.colors.onPrimary}
         >
           {t('SaveSettings')}
         </CustomButton>

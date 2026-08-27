@@ -59,5 +59,14 @@
   "RemindersLocalInfo": "Reminders are sent locally on your device. Keep the app installed for best reliability.",
   "SaveSettings": "Save settings",
   "DataStoredLocally": "Data is stored on this device. Cloud sync coming later.",
-  "SettingsSaved": "Settings saved"
+  "SettingsSaved": "Settings saved",
+  "New": "New",
+  "SearchBookingsPlaceholder": "Search name, phone, venue...",
+  "Results": "results",
+  "NoBookingsFound": "No bookings found",
+  "Completed": "Completed",
+  "Cancelled": "Cancelled",
+  "PendingPay": "Pending Pay",
+  "Amount": "Amount",
+  "Name": "Name"
 }
