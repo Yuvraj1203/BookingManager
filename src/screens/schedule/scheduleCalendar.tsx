@@ -1,20 +1,7 @@
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
-import { useAppNavigation } from '@/utils/navigationUtils';
-import { formatDate } from '@/utils/utils';
-import { useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import { Theme } from 'react-native-calendars/src/types';
-
-const enum DateFormatsEnum {
-  Date = 'YYYY-MM-DD',
-  FullDate = 'YYYY-MM-DDTHH:mm:ss',
-  ApiUTCDate = 'DD MMM YYYY hh:mm A',
-  UIDate = 'MMM DD, YYYY',
-  UITime = 'hh:mm A',
-  Year = 'YYYY',
-}
 
 export type MarkedDatesType = {
   [date: string]: {
@@ -31,38 +18,30 @@ export type MarkedDatesType = {
   };
 };
 
-export const ScheduleCalendar = () => {
+type ScheduleCalendarProps = {
+  /** currently selected date, in YYYY-MM-DD */
+  selectedDate: string;
+  /** dates that should carry a dot marker, e.g. dates with bookings */
+  markedDates: MarkedDatesType;
+  /** fired with the pressed date's dateString */
+  onDayPress: (date: string) => void;
+};
+
+export const ScheduleCalendar = ({
+  selectedDate,
+  markedDates,
+  onDayPress,
+}: ScheduleCalendarProps) => {
   /** to get the default theme of app */
   const theme = useTheme();
 
   /** theme integration in styles */
   const styles = makeStyle(theme);
 
-  /** for translations */
-  const { t } = useTranslation();
-
-  /** for navigation */
-  const navigation = useAppNavigation();
-
-  const currentLocalDate = useRef(
-    formatDate({ date: new Date(), returnFormat: DateFormatsEnum.Date }),
-  );
-
-  /** Added by @Yuvraj 05-03-2025 -> selected date (FYN-5817) */
-  const [selectedDate, setSelectedDate] = useState(currentLocalDate.current);
-
-  const [markedData, setMarkedData] = useState<MarkedDatesType>({});
-
-  /** Added by @Yuvraj 05-03-2025 -> for handling the date change event and handling the debouncing (FYN-5817) */
-  const handleDateChange = (date: string) => {
-    setSelectedDate(date);
-
-    // setIsExpanded(true);
-  };
-
   return (
     <View style={styles.main}>
       <Calendar
+        key={theme.dark ? 'dark' : 'light'}
         enableSwipeMonths
         current={selectedDate}
         theme={{
@@ -74,20 +53,16 @@ export const ScheduleCalendar = () => {
           selectedDayTextColor: theme.colors.surface,
           dayTextColor: theme.colors.onSurface,
           monthTextColor: theme.colors.onSurface,
+          dotColor: theme.colors.statusBusyColor,
         }}
         onDayPress={(day: DateData) => {
-          // if (!loading) {
-          // setIsExpanded(false);
-          handleDateChange(day.dateString);
-          // }
-        }}
-        onVisibleMonthsChange={(date: DateData[]) => {
-          // handleMonthChange(date?.at(0));
+          onDayPress(day.dateString);
         }}
         markingType="custom"
         markedDates={{
-          ...markedData,
+          ...markedDates,
           [selectedDate]: {
+            ...markedDates[selectedDate],
             selected: true,
             customStyles: {
               container: {

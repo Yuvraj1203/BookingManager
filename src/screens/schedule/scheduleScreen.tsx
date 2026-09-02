@@ -1,4 +1,4 @@
-import { CustomText, Shadow, Tap, TextVariants } from '@/components';
+import { CustomText, Shadow, TextVariants } from '@/components';
 import { CustomerCard } from '@/screens/dashboard/customerCard';
 import { useBookingStore } from '@/store';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
@@ -7,20 +7,12 @@ import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { DateData } from 'react-native-calendars';
 import { ScrollView } from 'react-native-gesture-handler';
 import { ScheduleCalendar } from './scheduleCalendar';
 
 enum DayCellDateFormatEnum {
   Key = 'YYYY-MM-DD',
 }
-
-type DayCellProps = {
-  date?: DateData;
-  state?: 'selected' | 'today' | 'disabled' | 'inactive' | '';
-  marking?: { marked?: boolean };
-  onPress?: (date?: DateData) => void;
-};
 
 export const ScheduleScreen = () => {
   /** to get the default theme of app */
@@ -66,38 +58,6 @@ export const ScheduleScreen = () => {
     [bookings, selectedDate],
   );
 
-  /** custom day cell: filled circle when selected, outlined box for today, dot for booked days */
-  const renderDay = ({ date, state, marking, onPress }: DayCellProps) => {
-    if (!date) {
-      return <View style={styles.dayCell} />;
-    }
-
-    const isSelected = state === 'selected';
-    const isToday = state === 'today';
-
-    return (
-      <Tap style={styles.dayCell} onPress={() => onPress?.(date)}>
-        <View
-          style={[
-            styles.dayNumber,
-            isSelected && styles.dayNumberSelected,
-            !isSelected && isToday && styles.dayNumberToday,
-          ]}
-        >
-          <CustomText
-            variant={TextVariants.bodyMedium}
-            color={isSelected ? theme.colors.onPrimary : theme.colors.onSurface}
-          >
-            {date.day}
-          </CustomText>
-        </View>
-        <View style={styles.dotSlot}>
-          {marking?.marked && <View style={styles.dot} />}
-        </View>
-      </Tap>
-    );
-  };
-
   return (
     <View style={styles.main}>
       <ScrollView
@@ -105,7 +65,11 @@ export const ScheduleScreen = () => {
         contentContainerStyle={styles.containerContent}
       >
         <Shadow style={styles.calendarCard}>
-          <ScheduleCalendar />
+          <ScheduleCalendar
+            selectedDate={selectedDate}
+            markedDates={markedDates}
+            onDayPress={setSelectedDate}
+          />
         </Shadow>
 
         <CustomText
@@ -152,37 +116,6 @@ const makeStyle = (theme: CustomTheme) =>
       marginTop: 10,
       paddingBottom: 20,
       backgroundColor: theme.colors.surfaceVariant,
-    },
-    dayCell: {
-      flex: 1,
-      alignItems: 'center',
-      paddingVertical: 2,
-    },
-    dayNumber: {
-      width: 32,
-      height: 32,
-      borderRadius: 16,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    dayNumberSelected: {
-      backgroundColor: theme.colors.primary,
-    },
-    dayNumberToday: {
-      borderRadius: 8,
-      borderWidth: 1,
-      borderColor: theme.colors.outline,
-    },
-    dotSlot: {
-      height: 10,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    dot: {
-      width: 5,
-      height: 5,
-      borderRadius: 2.5,
-      backgroundColor: theme.colors.statusBusyColor,
     },
     listHeader: {
       marginTop: 20,
