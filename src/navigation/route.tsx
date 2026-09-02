@@ -1,6 +1,7 @@
 import { CustomDatePicker, Tap } from '@/components';
 import { AddBooking, BookingDetail, SplashScreen } from '@/screens';
 import { Images } from '@/theme/assets/images';
+import { useTheme } from '@/theme/themeProvider/paperTheme';
 import {
   createNativeStackNavigator,
   NativeStackNavigationProp,
@@ -13,10 +14,12 @@ type RootNavigation = NativeStackNavigationProp<RootStackParamList>;
 const RootNavigator = () => {
   const RootStack = createNativeStackNavigator<RootStackParamList>();
 
+  const theme = useTheme();
+
   const headerBackButton = (navigation: RootNavigation) => {
     return (
       <Tap onPress={() => navigation.goBack()}>
-        <Images.Back />
+        <Images.Back color={theme.colors.onSurface} />
       </Tap>
     );
   };

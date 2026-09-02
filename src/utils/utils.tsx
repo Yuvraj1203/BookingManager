@@ -242,3 +242,15 @@ export const handlePopupDismiss = (shown: boolean, dimiss: () => void) => {
     }, [shown]);
   }
 };
+
+//call
+export const handleCall = (phone: number | string) => {
+  Linking.openURL(`tel:${phone}`);
+};
+
+//whatsaPP
+export const handleWhatsApp = (phoneNumb: string) => {
+  const phone = phoneNumb.replace(/\D/g, '');
+
+  Linking.openURL(`https://wa.me/${phone}`);
+};

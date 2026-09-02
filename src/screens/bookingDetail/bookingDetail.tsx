@@ -9,6 +9,7 @@ import { BookingType, useBookingStore } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { useAppNavigation, useAppRoute } from '@/utils/navigationUtils';
+import { handleCall, handleWhatsApp } from '@/utils/utils';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -57,7 +58,7 @@ const BookingDetail = () => {
         <Images.Phone color={actionDataIconColor} size={actionDataIconSize} />
       ),
       bg: theme.colors.surface,
-      onTap: () => {},
+      onTap: () => handleCall(cardItem.mobile),
     },
     {
       label: t('WhatsApp'),
@@ -65,7 +66,7 @@ const BookingDetail = () => {
         <Images.Message color={actionDataIconColor} size={actionDataIconSize} />
       ),
       bg: theme.colors.surface,
-      onTap: () => {},
+      onTap: () => handleWhatsApp(cardItem.mobile),
     },
     {
       label: t('PreviewPDF'),
@@ -73,7 +74,7 @@ const BookingDetail = () => {
         <Images.File color={actionDataIconColor} size={actionDataIconSize} />
       ),
       bg: theme.colors.background,
-      onTap: () => {},
+      onTap: () => console.log('pdf'),
     },
     {
       label: t('SharePDF'),
@@ -81,7 +82,7 @@ const BookingDetail = () => {
         <Images.Share color={actionDataIconColor} size={actionDataIconSize} />
       ),
       bg: theme.colors.background,
-      onTap: () => {},
+      onTap: () => console.log('pdf'),
     },
   ];
 
@@ -118,6 +119,7 @@ const BookingDetail = () => {
             return (
               <View key={index} style={styles.actionBoxContainer}>
                 <Shadow
+                  onPress={item.onTap}
                   style={[styles.actionBox, { backgroundColor: item.bg }]}
                 >
                   {item.icon}
@@ -200,6 +202,7 @@ const makeStyle = (theme: CustomTheme, insets: EdgeInsets) =>
       gap: 10,
       alignItems: 'center',
       justifyContent: 'center',
+      width: '100%',
     },
     footer: {
       width: '100%',
