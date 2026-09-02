@@ -243,6 +243,7 @@ const makeStyle = (theme: CustomTheme) =>
     mainContainer: {
       flex: 1,
       paddingHorizontal: 10,
+      paddingBottom: theme.bottomBarHeight,
     },
     field: {
       marginTop: 5,

@@ -25,5 +25,6 @@ const makeStyles = (theme: CustomTheme) =>
       backgroundColor: theme.colors.surfaceDisabled,
       borderRadius: theme.extraRoundness,
       marginBottom: 20,
+      marginTop: 10,
     },
   });

@@ -188,7 +188,7 @@ export const BookingScreen = () => {
 
         <ScrollView
           style={styles.mainContainer}
-          contentContainerStyle={{ paddingBottom: tabBarHeight + 130 }}
+          contentContainerStyle={{ paddingBottom: theme.bottomBarHeight + 60 }}
         >
           <View style={styles.list}>
             {visibleBookings.length > 0 ? (
@@ -212,7 +212,7 @@ export const BookingScreen = () => {
 
       <FAB
         icon={fabIcon}
-        style={[styles.fab, { bottom: tabBarHeight + 70 }]}
+        style={[styles.fab, { bottom: theme.bottomBarHeight + 15 }]}
         onPress={() => navigation.navigate('AddBooking')}
       />
     </View>

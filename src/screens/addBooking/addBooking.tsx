@@ -307,181 +307,179 @@ export const AddBooking = () => {
               </CustomText>
             )}
           </Animated.View>
-          <View style={styles.container} collapsable={false}>
-            <ScrollView
-              style={styles.mainContainer}
-              automaticallyAdjustKeyboardInsets
-            >
-              <FormTextInput
-                control={control}
-                name={'clientName'}
-                placeholder={t('ClientName')}
-                label={t('ClientName')}
-              />
-              <FormTextInput
-                control={control}
-                name={'mobile'}
-                placeholder={t('Mobile')}
-                label={t('Mobile')}
-                inputMode={InputModes.phone}
-                maxLength={10}
-                style={styles.field}
-                prefixIcon={{
-                  source: Images.flagIndia,
-                  type: ImageType.png,
-                }}
-              />
-              <View style={styles.flexRow}>
-                <Tap containerStyle={styles.flex} onPress={openDatePicker}>
-                  <FormTextInput
-                    control={control}
-                    name={'date'}
-                    placeholder={t('Date')}
-                    label={t('Date')}
-                    enabled={false}
-                    style={[styles.field, styles.flex]}
-                  />
-                </Tap>
-                <Tap containerStyle={styles.flex} onPress={openTimePicker}>
-                  <FormTextInput
-                    control={control}
-                    name={'time'}
-                    placeholder={t('Time')}
-                    label={t('Time')}
-                    enabled={false}
-                    style={[styles.field, styles.flex]}
-                  />
-                </Tap>
-              </View>
-              <View style={styles.flexRow}>
+          <ScrollView
+            style={styles.mainContainer}
+            automaticallyAdjustKeyboardInsets
+          >
+            <FormTextInput
+              control={control}
+              name={'clientName'}
+              placeholder={t('ClientName')}
+              label={t('ClientName')}
+            />
+            <FormTextInput
+              control={control}
+              name={'mobile'}
+              placeholder={t('Mobile')}
+              label={t('Mobile')}
+              inputMode={InputModes.phone}
+              maxLength={10}
+              style={styles.field}
+              prefixIcon={{
+                source: Images.flagIndia,
+                type: ImageType.png,
+              }}
+            />
+            <View style={styles.flexRow}>
+              <Tap containerStyle={styles.flex} onPress={openDatePicker}>
                 <FormTextInput
                   control={control}
-                  name={'duration'}
-                  placeholder={t('Duration')}
-                  label={t('Duration')}
-                  inputMode={InputModes.numeric}
+                  name={'date'}
+                  placeholder={t('Date')}
+                  label={t('Date')}
+                  enabled={false}
                   style={[styles.field, styles.flex]}
                 />
+              </Tap>
+              <Tap containerStyle={styles.flex} onPress={openTimePicker}>
                 <FormTextInput
                   control={control}
-                  name={'horses'}
-                  placeholder={t('Horses')}
-                  label={t('Horses')}
-                  inputMode={InputModes.numeric}
+                  name={'time'}
+                  placeholder={t('Time')}
+                  label={t('Time')}
+                  enabled={false}
                   style={[styles.field, styles.flex]}
                 />
-              </View>
+              </Tap>
+            </View>
+            <View style={styles.flexRow}>
               <FormTextInput
                 control={control}
-                name={'venue'}
-                placeholder={t('Venue')}
-                label={t('Venue')}
-                style={styles.field}
+                name={'duration'}
+                placeholder={t('Duration')}
+                label={t('Duration')}
+                inputMode={InputModes.numeric}
+                style={[styles.field, styles.flex]}
               />
               <FormTextInput
                 control={control}
-                name={'addOns'}
-                placeholder={t('AddOns')}
-                label={t('AddOns')}
-                style={styles.field}
+                name={'horses'}
+                placeholder={t('Horses')}
+                label={t('Horses')}
+                inputMode={InputModes.numeric}
+                style={[styles.field, styles.flex]}
               />
-              <View style={styles.flexRow}>
-                <CurrencyFormInput
-                  control={control}
-                  name={'totalAmount'}
-                  placeholder={t('TotalAmount')}
-                  label={t('TotalAmount')}
-                  style={[styles.field, styles.flex]}
-                />
-                <CurrencyFormInput
-                  control={control}
-                  name={'advancePaid'}
-                  placeholder={t('AdvancePaid')}
-                  label={t('AdvancePaid')}
-                  style={[styles.field, styles.flex]}
-                />
-              </View>
+            </View>
+            <FormTextInput
+              control={control}
+              name={'venue'}
+              placeholder={t('Venue')}
+              label={t('Venue')}
+              style={styles.field}
+            />
+            <FormTextInput
+              control={control}
+              name={'addOns'}
+              placeholder={t('AddOns')}
+              label={t('AddOns')}
+              style={styles.field}
+            />
+            <View style={styles.flexRow}>
+              <CurrencyFormInput
+                control={control}
+                name={'totalAmount'}
+                placeholder={t('TotalAmount')}
+                label={t('TotalAmount')}
+                style={[styles.field, styles.flex]}
+              />
+              <CurrencyFormInput
+                control={control}
+                name={'advancePaid'}
+                placeholder={t('AdvancePaid')}
+                label={t('AdvancePaid')}
+                style={[styles.field, styles.flex]}
+              />
+            </View>
 
-              <CustomMenu
-                actions={menuActions}
-                onCommonPress={id => {
-                  setValue('status', id);
-                }}
-                trigger={
-                  <FormTextInput
-                    control={control}
-                    name={'status'}
-                    placeholder={t('Status')}
-                    label={t('Status')}
-                    style={styles.field}
-                    enabled={false}
-                  />
-                }
-              />
-              <FormTextInput
-                control={control}
-                name={'notes'}
-                placeholder={t('Notes')}
-                label={t('Notes')}
-                multiLine
-                maxLines={4}
-                style={styles.field}
-              />
-              {selectedImages && selectedImages?.length > 0 ? (
-                <View style={styles.imagesContainer}>
-                  {selectedImages.map((item, index) => {
-                    const image = item.assets?.at(0);
-                    return (
-                      <View key={index} style={styles.imageItemContainer}>
-                        <Tap
-                          onPress={() => setShowPicker(true)}
-                          style={styles.selectedImageTap}
-                        >
-                          <View style={styles.trash}>
-                            <Images.Trash
-                              color={theme.colors.danger}
-                              size={20}
-                              onPress={() => handleRemove(item)}
-                            />
-                          </View>
-                          <CustomImage
-                            source={{
-                              uri: image?.uri,
-                            }}
-                            style={styles.renderImage}
+            <CustomMenu
+              actions={menuActions}
+              onCommonPress={id => {
+                setValue('status', id);
+              }}
+              trigger={
+                <FormTextInput
+                  control={control}
+                  name={'status'}
+                  placeholder={t('Status')}
+                  label={t('Status')}
+                  style={styles.field}
+                  enabled={false}
+                />
+              }
+            />
+            <FormTextInput
+              control={control}
+              name={'notes'}
+              placeholder={t('Notes')}
+              label={t('Notes')}
+              multiLine
+              maxLines={4}
+              style={styles.field}
+            />
+            {selectedImages && selectedImages?.length > 0 ? (
+              <View style={styles.imagesContainer}>
+                {selectedImages.map((item, index) => {
+                  const image = item.assets?.at(0);
+                  return (
+                    <View key={index} style={styles.imageItemContainer}>
+                      <Tap
+                        onPress={() => setShowPicker(true)}
+                        style={styles.selectedImageTap}
+                      >
+                        <View style={styles.trash}>
+                          <Images.Trash
+                            color={theme.colors.danger}
+                            size={20}
+                            onPress={() => handleRemove(item)}
                           />
-                        </Tap>
-                      </View>
-                    );
-                  })}
-                  <View style={styles.imageItemContainer}>
-                    <Tap
-                      onPress={() => setShowPicker(true)}
-                      style={[styles.selectedImageTap, styles.addSelectedImage]}
-                    >
-                      <Images.CirclePlus
-                        size={40}
-                        strokeWidth={1.5}
-                        color={theme.colors.onSurface}
-                      />
-                    </Tap>
-                  </View>
+                        </View>
+                        <CustomImage
+                          source={{
+                            uri: image?.uri,
+                          }}
+                          style={styles.renderImage}
+                        />
+                      </Tap>
+                    </View>
+                  );
+                })}
+                <View style={styles.imageItemContainer}>
+                  <Tap
+                    onPress={() => setShowPicker(true)}
+                    style={[styles.selectedImageTap, styles.addSelectedImage]}
+                  >
+                    <Images.CirclePlus
+                      size={40}
+                      strokeWidth={1.5}
+                      color={theme.colors.onSurface}
+                    />
+                  </Tap>
                 </View>
-              ) : (
-                <Tap
-                  onPress={() => setShowPicker(true)}
-                  style={styles.imagePickerTap}
-                >
-                  <Images.CirclePlus
-                    size={40}
-                    strokeWidth={1.5}
-                    color={theme.colors.onSurface}
-                  />
-                  <CustomText>{t('UploadImage')}</CustomText>
-                </Tap>
-              )}
-            </ScrollView>
-          </View>
+              </View>
+            ) : (
+              <Tap
+                onPress={() => setShowPicker(true)}
+                style={styles.imagePickerTap}
+              >
+                <Images.CirclePlus
+                  size={40}
+                  strokeWidth={1.5}
+                  color={theme.colors.onSurface}
+                />
+                <CustomText>{t('UploadImage')}</CustomText>
+              </Tap>
+            )}
+          </ScrollView>
 
           <View style={styles.buttonContainer}>
             <CustomButton
@@ -491,13 +489,13 @@ export const AddBooking = () => {
               {t('Save')}
             </CustomButton>
           </View>
-        </View>
 
-        <CustomImagePicker
-          showPicker={showPicker}
-          setShowPicker={setShowPicker}
-          mediaList={handleMediaList}
-        />
+          <CustomImagePicker
+            showPicker={showPicker}
+            setShowPicker={setShowPicker}
+            mediaList={handleMediaList}
+          />
+        </View>
       </KeyboardAvoidingView>
     </SafeScreen>
   );
@@ -507,12 +505,8 @@ const makeStyles = (theme: CustomTheme) =>
   StyleSheet.create({
     main: {
       flex: 1,
-      paddingTop: Platform.select({ ios: 10, android: 0 }),
     },
     flex: {
-      flex: 1,
-    },
-    container: {
       flex: 1,
     },
     mainContainer: {

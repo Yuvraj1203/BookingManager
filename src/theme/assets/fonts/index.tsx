@@ -82,7 +82,7 @@ export const _fontConfig = {
 
   labelSmall: {
     fontFamily: CustomFonts.Regular,
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '400',
     letterSpacing: 0,
     lineHeight: 12,

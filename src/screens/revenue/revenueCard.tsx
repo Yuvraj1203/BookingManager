@@ -1,7 +1,7 @@
 import { CustomText, Shadow, TextVariants } from '@/components';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
-import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 type RevenueCardProps = {
   label: string;
@@ -19,18 +19,16 @@ export const RevenueCard = ({ label, amount, ...props }: RevenueCardProps) => {
 
   return (
     <Shadow style={[styles.card, props.style]}>
-      <CustomText>{label}</CustomText>
-      <CustomText
-        variant={TextVariants.titleLarge}
-        color={props.textColor}
-        style={styles.cardAmount}
-      >
+      <CustomText color={props.textColor}>{label}</CustomText>
+      <View style={styles.cardAmount}>
         <Images.IndianRupee
           color={props.textColor ?? theme.colors.onSurfaceVariant}
           size={20}
         />
-        {amount}
-      </CustomText>
+        <CustomText variant={TextVariants.titleLarge} color={props.textColor}>
+          {amount}
+        </CustomText>
+      </View>
     </Shadow>
   );
 };
@@ -45,7 +43,8 @@ const makeStyle = (theme: CustomTheme) =>
       alignItems: 'center',
     },
     cardAmount: {
-      // alignItems: 'center',
+      flexDirection: 'row',
+      alignItems: 'center',
     },
     gradient: {
       boxShadow: theme.boxShadow,

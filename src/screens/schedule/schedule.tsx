@@ -1,9 +1,10 @@
-import { CustomText, SafeScreen } from '@/components';
+import { SafeScreen } from '@/components';
+import { ScheduleScreen } from './scheduleScreen';
 
 export const Schedule = () => {
   return (
     <SafeScreen>
-      <CustomText>{'Schedule'}</CustomText>
+      <ScheduleScreen />
     </SafeScreen>
   );
 };

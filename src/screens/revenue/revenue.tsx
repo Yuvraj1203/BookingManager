@@ -5,9 +5,11 @@ import {
   CurrentWeekChartType,
   getBookingAnalytics,
 } from '@/utils/bookingUtils';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { RevenueBarChart } from './revenueBarChart';
 import { RevenueCard } from './revenueCard';
 
@@ -15,8 +17,11 @@ const Revenue = () => {
   /**to get the default theme of app */
   const theme = useTheme();
 
+  /** height of the bottom tab bar, so scroll content and the FAB clear it */
+  const tabBarHeight = useBottomTabBarHeight();
+
   /** theme integration in styles */
-  const styles = makeStyle(theme);
+  const styles = makeStyle(theme, tabBarHeight);
 
   /** for tranlations */
   const { t } = useTranslation();
@@ -92,30 +97,43 @@ const Revenue = () => {
 
   return (
     <SafeScreen>
-      <View style={styles.main}>
-        {cardData.map((item, index) => {
-          return (
-            <RevenueCard
-              key={index}
-              label={item.label}
-              amount={item.amount}
-              style={item.style}
-              textColor={item.textColor}
-            />
-          );
-        })}
+      <ScrollView
+        contentContainerStyle={styles.contentContainer}
+        style={styles.main}
+      >
+        <View style={styles.content}>
+          {cardData.map((item, index) => {
+            return (
+              <RevenueCard
+                key={index}
+                label={item.label}
+                amount={item.amount}
+                style={item.style}
+                textColor={item.textColor}
+              />
+            );
+          })}
 
-        <RevenueBarChart currentWeekBarChart={currentWeekBarChart} />
-      </View>
+          <RevenueBarChart currentWeekBarChart={currentWeekBarChart} />
+        </View>
+      </ScrollView>
     </SafeScreen>
   );
 };
 
-const makeStyle = (theme: CustomTheme) =>
+const makeStyle = (theme: CustomTheme, tabBarHeight: number) =>
   StyleSheet.create({
     main: {
+      flex: 1,
       paddingVertical: 10,
       paddingHorizontal: 20,
+    },
+    contentContainer: {
+      flexGrow: 1,
+      justifyContent: 'center',
+    },
+    content: {
+      marginBottom: theme.bottomBarHeight,
     },
   });
 

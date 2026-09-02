@@ -84,7 +84,12 @@ const Dashboard = () => {
               style={[styles.card, styles.primaryBg]}
             >
               <DashboardCard
-                image={Images.calendar}
+                icon={
+                  <Images.Calendar
+                    size={DASHBOARD_IMAGE_SIZE}
+                    color={theme.colors.onPrimary}
+                  />
+                }
                 title={t('ThisMonth')}
                 value={currentMonthData?.length.toString() ?? '0'}
                 valueUnit={t('Bookings')}
@@ -169,6 +174,7 @@ const Dashboard = () => {
         <CustomerCardSection
           data={next7DaysBookings ?? []}
           title={t('Upcoming')}
+          style={styles.marginBottom}
         />
       </ScrollView>
     </SafeScreen>
@@ -213,6 +219,9 @@ const makeStyle = (theme: CustomTheme) =>
     },
     addButton: {
       marginVertical: 15,
+    },
+    marginBottom: {
+      marginBottom: 100,
     },
   });
 

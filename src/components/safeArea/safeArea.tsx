@@ -12,7 +12,7 @@ type Props = {
 
 export function SafeScreen({
   top = false, //make true if has customHeader
-  bottom = true,
+  bottom = false,
   ...props
 }: Props) {
   const theme = useTheme(); // theme
@@ -21,7 +21,7 @@ export function SafeScreen({
 
   const edges: Array<'top' | 'bottom' | 'left' | 'right'> = ['left', 'right'];
   if (top) edges.push('top');
-  if (bottom) edges.push('bottom');
+  // if (bottom) edges.push('bottom');
 
   return (
     <SafeAreaView style={[styles.container, props.style]} edges={edges}>
@@ -39,6 +39,7 @@ const makeStyles = (theme: CustomTheme) =>
     container: {
       flex: 1,
       backgroundColor: theme.colors.surface,
+      paddingBottom: 10,
       // paddingTop: insets.top,
       // paddingBottom: insets.bottom,
     },

@@ -3,12 +3,13 @@ import { BookingType } from '@/store';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { CustomerCard } from './customerCard';
 
 type CustomerCardSectionProps = {
   title?: string;
   data: BookingType[];
+  style?: StyleProp<ViewStyle>;
 };
 
 export const CustomerCardSection = ({ ...props }: CustomerCardSectionProps) => {
@@ -22,7 +23,7 @@ export const CustomerCardSection = ({ ...props }: CustomerCardSectionProps) => {
   const { t } = useTranslation();
 
   return (
-    <View style={styles.main}>
+    <View style={[styles.main, props.style]}>
       <CustomText maxLines={1} variant={TextVariants.bodyLarge}>
         {props.title}
       </CustomText>

@@ -64,6 +64,7 @@ const makeStyle = (theme: CustomTheme) =>
       marginVertical: 10,
       marginTop: 20,
       gap: 20,
+      overflow: 'hidden',
     },
     axisText: {
       color: theme.colors.outline,
