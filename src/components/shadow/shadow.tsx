@@ -16,33 +16,23 @@ export const Shadow = ({ inset = false, ...props }: ShadowProps) => {
   /** theme integration in styles */
   const styles = makeStyle(theme);
 
+  const Style = [
+    {
+      ...styles.shadowContainer,
+      boxShadow: inset ? theme.insetShadow : theme.boxShadow,
+    },
+    props.style,
+  ];
+
   if (props.onPress) {
-    <Tap
-      containerStyle={[
-        {
-          ...styles.shadowContainer,
-          boxShadow: inset ? theme.insetShadow : theme.boxShadow,
-        },
-        props.style,
-      ]}
-    >
-      {props.children}
-    </Tap>;
+    return (
+      <Tap style={Style} onPress={props.onPress}>
+        {props.children}
+      </Tap>
+    );
   }
 
-  return (
-    <View
-      style={[
-        {
-          ...styles.shadowContainer,
-          boxShadow: inset ? theme.insetShadow : theme.boxShadow,
-        },
-        props.style,
-      ]}
-    >
-      {props.children}
-    </View>
-  );
+  return <View style={Style}>{props.children}</View>;
 };
 
 const makeStyle = (theme: CustomTheme) =>
