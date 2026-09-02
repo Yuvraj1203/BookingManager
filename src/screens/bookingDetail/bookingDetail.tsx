@@ -9,9 +9,10 @@ import { BookingType, useBookingStore } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { useAppNavigation, useAppRoute } from '@/utils/navigationUtils';
+import { generateBookingPDF } from '@/utils/pdfGen';
 import { handleCall, handleWhatsApp } from '@/utils/utils';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, Share, StyleSheet, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import DetailCard from './detailCard';
 
@@ -74,7 +75,11 @@ const BookingDetail = () => {
         <Images.File color={actionDataIconColor} size={actionDataIconSize} />
       ),
       bg: theme.colors.background,
-      onTap: () => console.log('pdf'),
+      onTap: async () => {
+        const pdfUri = await generateBookingPDF(cardItem);
+
+        navigation.navigate('PdfPreview', { uri: pdfUri });
+      },
     },
     {
       label: t('SharePDF'),
@@ -82,7 +87,18 @@ const BookingDetail = () => {
         <Images.Share color={actionDataIconColor} size={actionDataIconSize} />
       ),
       bg: theme.colors.background,
-      onTap: () => console.log('pdf'),
+      onTap: async () => {
+        try {
+          const pdfUri = await generateBookingPDF(cardItem);
+
+          await Share.share({
+            url: pdfUri,
+            title: 'Booking Invoice',
+          });
+        } catch (error) {
+          console.error('Failed to share PDF:', error);
+        }
+      },
     },
   ];
 

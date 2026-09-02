@@ -1,5 +1,5 @@
 import { CustomDatePickerProps } from '@/components/customDatePicker/customDatePicker.types';
-import { AddBookingProps, BookingDetailProps } from '@/screens';
+import { AddBookingProps, BookingDetailProps, PdfPreviewProps } from '@/screens';
 
 export type RootStackParamList = {
   SplashScreen: undefined;
@@ -8,4 +8,5 @@ export type RootStackParamList = {
   AddBooking: undefined | AddBookingProps;
   CustomDatePicker: CustomDatePickerProps;
   BookingDetail: BookingDetailProps;
+  PdfPreview: PdfPreviewProps;
 };

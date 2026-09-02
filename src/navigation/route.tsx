@@ -1,5 +1,5 @@
 import { CustomDatePicker, Tap } from '@/components';
-import { AddBooking, BookingDetail, SplashScreen } from '@/screens';
+import { AddBooking, BookingDetail, PdfPreview, SplashScreen } from '@/screens';
 import { Images } from '@/theme/assets/images';
 import { useTheme } from '@/theme/themeProvider/paperTheme';
 import {
@@ -59,6 +59,15 @@ const RootNavigator = () => {
           headerShown: false,
           sheetAllowedDetents: [1.0],
           sheetExpandsWhenScrolledToEdge: true,
+        }}
+      />
+
+      <RootStack.Screen
+        name="PdfPreview"
+        component={PdfPreview}
+        options={{
+          headerShown: true,
+          title: 'Preview PDF',
         }}
       />
 

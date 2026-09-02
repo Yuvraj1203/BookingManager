@@ -7,6 +7,10 @@ export * from './bookings/bookings';
 export * from './bottomTabs/bottomTabs';
 export { default as Dashboard } from './dashboard/dashboard';
 export * from './drawerOne/drawerOne';
+export {
+  default as PdfPreview,
+  type PdfPreviewProps,
+} from './pdfPreview/pdfPreview';
 export { default as Revenue } from './revenue/revenue';
 export * from './schedule/schedule';
 export * from './settings/settings';
