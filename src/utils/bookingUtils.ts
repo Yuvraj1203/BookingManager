@@ -48,8 +48,6 @@ export const getBookingAnalytics = (bookings: BookingType[]) => {
     return acc + (Number(curr.totalAmount) - Number(curr.advancePaid));
   }, 0);
 
-  console.log('totalPendingAmount=>', totalPendingAmount);
-
   // -----------------------------
   // Current week: Monday -> Sunday
   // -----------------------------

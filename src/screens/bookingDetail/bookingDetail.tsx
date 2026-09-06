@@ -5,12 +5,14 @@ import {
   Tap,
   TextVariants,
 } from '@/components';
+import { CustomAlertPopup } from '@/components/custom';
 import { BookingType, useBookingStore } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { useAppNavigation, useAppRoute } from '@/utils/navigationUtils';
 import { generateBookingPDF } from '@/utils/pdfGen';
 import { handleCall, handleWhatsApp } from '@/utils/utils';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Share, StyleSheet, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -41,10 +43,12 @@ const BookingDetail = () => {
   /** booking store */
   const bookingStore = useBookingStore();
 
+  /** delete popup state */
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+
   //handle delete
-  const handleDelete = (id: string) => {
-    bookingStore.deleteBooking(id);
-    navigation.goBack();
+  const handleDelete = () => {
+    setShowDeletePopup(true);
   };
 
   /** color icons in action data */
@@ -167,7 +171,7 @@ const BookingDetail = () => {
         <Tap
           containerStyle={styles.tap}
           style={[styles.delete, styles.footerButton]}
-          onPress={() => handleDelete(cardItem.id)}
+          onPress={() => handleDelete()}
         >
           {/* <Images.Trash /> */}
           <CustomText color={theme.colors.onDark}>{t('Delete')}</CustomText>
@@ -184,6 +188,20 @@ const BookingDetail = () => {
           </CustomText>
         </Tap>
       </View>
+
+      <CustomAlertPopup
+        title={t('Delete')}
+        msg={t('DeleteBookingMsg')}
+        shown={showDeletePopup}
+        setShown={setShowDeletePopup}
+        onNegativePress={() => setShowDeletePopup(false)}
+        onPositivePress={() => {
+          bookingStore.deleteBooking(cardItem.id);
+          navigation.goBack();
+        }}
+        PositiveText={t('Delete')}
+        NegativeText={t('Keep')}
+      />
     </SafeScreen>
   );
 };
@@ -229,7 +247,7 @@ const makeStyle = (theme: CustomTheme, insets: EdgeInsets) =>
       alignItems: 'center',
       // justifyContent: 'space-between',
       gap: 10,
-      paddingBottom: insets.bottom,
+      paddingBottom: insets.bottom || 20,
       padding: 10,
       backgroundColor: theme.colors.surface,
     },

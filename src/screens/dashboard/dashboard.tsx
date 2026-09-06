@@ -1,4 +1,5 @@
 import { ButtonIconsProps, CustomButton, SafeScreen, Tap } from '@/components';
+import { enableNotifications } from '@/services/notificationService';
 import { BookingType, useAppLanguageStore, useBookingStore } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
@@ -72,6 +73,11 @@ const Dashboard = () => {
     return <Images.Plus size={size} color={color} />;
   };
 
+  const triggerNot = async () => {
+    await enableNotifications();
+    // await showNotification('Booking Reminder', 'You have a booking today');
+  };
+
   return (
     <SafeScreen style={styles.main}>
       <ScrollView style={styles.container}>
@@ -123,7 +129,7 @@ const Dashboard = () => {
           <View style={styles.cardsContainer}>
             <Tap
               shadow={true}
-              // onPress={() => console.log('hi')}
+              onPress={triggerNot}
               containerStyle={styles.cards}
               style={[styles.card, styles.outlined]}
             >

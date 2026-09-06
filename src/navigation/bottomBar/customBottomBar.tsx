@@ -58,56 +58,58 @@ const CustomBottomBar = ({
 
   return (
     <Shadow style={styles.container}>
-      <View style={[StyleSheet.absoluteFill, styles.barContainer]}>
-        {state.routes.map((route, index) => {
-          const isFocused = state.index === index;
+      <View style={StyleSheet.absoluteFill}>
+        <View style={[StyleSheet.absoluteFill, styles.barContainer]}>
+          {state.routes.map((route, index) => {
+            const isFocused = state.index === index;
 
-          const item = bottomTabsData[index];
+            const item = bottomTabsData[index];
 
-          const Icon = item.icon;
+            const Icon = item.icon;
 
-          const onPress = () => {
-            const event = navigation.emit({
-              type: 'tabPress',
-              target: route.key,
-              canPreventDefault: true,
-            });
+            const onPress = () => {
+              const event = navigation.emit({
+                type: 'tabPress',
+                target: route.key,
+                canPreventDefault: true,
+              });
 
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name);
-            }
-          };
+              if (!isFocused && !event.defaultPrevented) {
+                navigation.navigate(route.name);
+              }
+            };
 
-          return (
-            <BottomTabButton
-              key={route.key}
-              title={route.name}
-              focused={isFocused}
-              Icon={Icon}
-              onPress={onPress}
-            />
-          );
-        })}
+            return (
+              <BottomTabButton
+                key={route.key}
+                title={route.name}
+                focused={isFocused}
+                Icon={Icon}
+                onPress={onPress}
+              />
+            );
+          })}
+        </View>
+        <Animated.View
+          style={[
+            styles.floater,
+            animatedStyle,
+            {
+              width: tabWidth,
+            },
+          ]}
+        >
+          <View style={styles.glassOverlayTab}></View>
+        </Animated.View>
+
+        <BlurView
+          style={[StyleSheet.absoluteFill, styles.wholeBarBlur]}
+          blurType={theme.dark ? 'dark' : 'xlight'}
+          blurAmount={1}
+        />
+
+        {/* <View style={styles.glassOverlay}></View> */}
       </View>
-      <Animated.View
-        style={[
-          styles.floater,
-          animatedStyle,
-          {
-            width: tabWidth,
-          },
-        ]}
-      >
-        <View style={styles.glassOverlayTab}></View>
-      </Animated.View>
-
-      <BlurView
-        style={[StyleSheet.absoluteFill, styles.wholeBarBlur]}
-        blurType={theme.dark ? 'dark' : 'light'}
-        overlayColor={theme.colors.surface}
-        blurAmount={5}
-      />
-      <View style={styles.glassOverlay}></View>
     </Shadow>
   );
 };
@@ -133,8 +135,8 @@ const makeStyle = (theme: CustomTheme) =>
       borderRadius: theme.roundness,
     },
     floater: {
-      position: 'absolute',
       top: 5,
+      position: 'absolute',
       bottom: 5,
       overflow: 'hidden',
       borderRadius: theme.roundness,

@@ -16,6 +16,7 @@
     "@callstack/liquid-glass": "^0.8.0",
     "@d11/react-native-fast-image": "^8.13.0",
     "@hookform/resolvers": "^5.4.0",
+    "@notifee/react-native": "^9.1.8",
     "@react-native-community/blur": "^4.4.1",
     "@react-native-menu/menu": "^2.0.0",
     "@react-native-vector-icons/material-design-icons": "^13.1.2",

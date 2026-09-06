@@ -87,7 +87,6 @@ export const CustomActionSheet = ({
 
   /** close call */
   const handleClose = () => {
-    console.log(t('AddReceiptImage'));
     props.setShowActionSheet(!props.showActionSheet);
   };
 

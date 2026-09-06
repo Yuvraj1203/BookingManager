@@ -18,6 +18,7 @@ type TapProps = PressableProps & {
   children: ReactNode;
   shadow?: boolean;
   style?: StyleProp<ViewStyle>;
+  isAnimate?: boolean;
 };
 
 export const Tap = ({
@@ -25,6 +26,7 @@ export const Tap = ({
   children,
   style,
   shadow = false,
+  isAnimate = true,
   ...props
 }: TapProps) => {
   const scale = useSharedValue(1);
@@ -40,10 +42,12 @@ export const Tap = ({
   return (
     <Pressable
       onPressIn={() => {
-        scale.value = withTiming(0.8);
+        if (isAnimate) scale.value = withTiming(0.8);
       }}
       onPressOut={() => {
-        scale.value = withTiming(1);
+        if (isAnimate) {
+          scale.value = withTiming(1);
+        }
       }}
       style={[containerStyle]}
       {...props}

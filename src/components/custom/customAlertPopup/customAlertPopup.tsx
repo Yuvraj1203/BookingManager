@@ -9,9 +9,17 @@ import {
 import { usePopupManagerStore } from '@/store';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { handlePopupDismiss } from '@/utils/utils';
+import { BlurView } from '@react-native-community/blur';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import {
+  Modal,
+  Platform,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
 import { Divider, Portal } from 'react-native-paper';
 import LoadingView from '../loadingView/loadingView';
 
@@ -62,143 +70,169 @@ function CustomAlertPopup({ dismissOnBackPress = true, ...props }: Props) {
   /** added by @YUvraj 10-10-2025 --> dismiss the popup when security minimize popup shows */
   handlePopupDismiss(props.shown, dimiss);
 
-  return (
-    <Portal>
-      <Modal
-        visible={props.shown}
-        transparent={true}
-        onRequestClose={() => {
+  const renderPopup = () => {
+    return (
+      <Tap
+        onPress={() => {
           if (dismissOnBackPress) {
             dimiss();
           }
         }}
-        animationType="fade"
+        containerStyle={styles.container}
+        style={styles.content}
+        isAnimate={false}
       >
-        <Tap
-          onPress={() => {
+        <>
+          {Platform.OS === 'android' && (
+            <BlurView
+              style={[StyleSheet.absoluteFill]}
+              blurType={theme.dark ? 'dark' : 'light'}
+              blurAmount={1}
+            />
+          )}
+          <Shadow
+            style={[
+              props.compact ? styles.cardCompact : styles.card,
+              props.style,
+            ]}
+          >
+            <View>
+              {props.statusIcon && (
+                <CustomImage
+                  source={props.statusIcon?.source}
+                  type={props.statusIcon?.type}
+                  color={props.statusIcon?.color}
+                  resizeMode={props.statusIcon?.resizeMode}
+                  style={
+                    props.statusIcon.style
+                      ? props.statusIcon.style
+                      : styles.statusIcon
+                  }
+                />
+              )}
+
+              <CustomText
+                variant={TextVariants.bodyLarge}
+                style={styles.heading}
+              >
+                {props.title ? props.title : t('Message')}
+              </CustomText>
+              <View style={styles.cardContent}>
+                <CustomText style={styles.body}>{props.msg}</CustomText>
+                <Divider
+                  style={props.compact ? styles.dividerCompact : styles.divider}
+                />
+              </View>
+              <View style={styles.cardActions}>
+                {props.onNegativePress ? (
+                  <View style={styles.actionLayout}>
+                    <Tap
+                      onPress={props.onNegativePress}
+                      containerStyle={styles.flex}
+                      style={styles.negativeBtn}
+                    >
+                      <CustomText
+                        variant={TextVariants.bodyMedium}
+                        color={theme.colors.tertiary}
+                        style={styles.negativeBtnTxt}
+                      >
+                        {props.NegativeText ? props.NegativeText : t('No')}
+                      </CustomText>
+                    </Tap>
+                    <View style={styles.actionDivider} />
+
+                    <Tap
+                      onPress={() => {
+                        if (props.onPositivePress && !props.loading) {
+                          props.onPositivePress();
+                        }
+                      }}
+                      style={styles.positiveBtn}
+                      containerStyle={styles.flex}
+                    >
+                      <View style={{ flex: 1 }}>
+                        <CustomText
+                          variant={TextVariants.bodyMedium}
+                          color={theme.colors.tertiary}
+                          style={styles.positiveBtnTxt}
+                        >
+                          {props.PositiveText ? props.PositiveText : t('Yes')}
+                        </CustomText>
+                        {props.loading && <LoadingView />}
+                      </View>
+                    </Tap>
+                  </View>
+                ) : (
+                  <Tap
+                    onPress={() => {
+                      if (props.onPositivePress && !props.loading) {
+                        props.onPositivePress();
+                      }
+                    }}
+                    style={styles.positiveSingleBtn}
+                  >
+                    <View>
+                      <CustomText
+                        variant={TextVariants.bodyMedium}
+                        color={theme.colors.tertiary}
+                        style={styles.positiveBtnTxt}
+                      >
+                        {props.PositiveText ? props.PositiveText : t('Done')}
+                      </CustomText>
+                      {props.loading && <LoadingView />}
+                    </View>
+                  </Tap>
+                )}
+              </View>
+            </View>
+          </Shadow>
+        </>
+      </Tap>
+    );
+  };
+
+  return (
+    <Portal>
+      {Platform.OS === 'ios' ? (
+        <Modal
+          visible={props.shown}
+          transparent={false}
+          onRequestClose={() => {
             if (dismissOnBackPress) {
               dimiss();
             }
           }}
-          style={styles.content}
+          animationType={'slide'}
         >
-          <View style={styles.container}>
-            <Shadow
-              style={[
-                props.compact ? styles.cardCompact : styles.card,
-                props.style,
-              ]}
-            >
-              <Tap style={{ padding: 0 }} onPress={() => {}}>
-                <View>
-                  {props.statusIcon && (
-                    <CustomImage
-                      source={props.statusIcon?.source}
-                      type={props.statusIcon?.type}
-                      color={props.statusIcon?.color}
-                      resizeMode={props.statusIcon?.resizeMode}
-                      style={
-                        props.statusIcon.style
-                          ? props.statusIcon.style
-                          : styles.statusIcon
-                      }
-                    />
-                  )}
-
-                  <CustomText
-                    variant={TextVariants.bodyLarge}
-                    style={styles.heading}
-                  >
-                    {props.title ? props.title : t('Message')}
-                  </CustomText>
-                  <View style={styles.cardContent}>
-                    <CustomText style={styles.body}>{props.msg}</CustomText>
-                    <Divider
-                      style={
-                        props.compact ? styles.dividerCompact : styles.divider
-                      }
-                    />
-                  </View>
-                  <View style={styles.cardActions}>
-                    {props.onNegativePress ? (
-                      <View style={styles.actionLayout}>
-                        <Tap
-                          onPress={props.onNegativePress}
-                          style={styles.negativeBtn}
-                        >
-                          <CustomText
-                            variant={TextVariants.bodyMedium}
-                            color={theme.colors.tertiary}
-                            style={styles.negativeBtnTxt}
-                          >
-                            {props.NegativeText ? props.NegativeText : t('No')}
-                          </CustomText>
-                        </Tap>
-                        <View style={styles.actionDivider} />
-
-                        <Tap
-                          onPress={() => {
-                            if (props.onPositivePress && !props.loading) {
-                              props.onPositivePress();
-                            }
-                          }}
-                          style={styles.positiveBtn}
-                        >
-                          <View style={{ flex: 1 }}>
-                            <CustomText
-                              variant={TextVariants.bodyMedium}
-                              color={theme.colors.tertiary}
-                              style={styles.positiveBtnTxt}
-                            >
-                              {props.PositiveText
-                                ? props.PositiveText
-                                : t('Yes')}
-                            </CustomText>
-                            {props.loading && <LoadingView />}
-                          </View>
-                        </Tap>
-                      </View>
-                    ) : (
-                      <Tap
-                        onPress={() => {
-                          if (props.onPositivePress && !props.loading) {
-                            props.onPositivePress();
-                          }
-                        }}
-                        style={styles.positiveSingleBtn}
-                      >
-                        <View>
-                          <CustomText
-                            variant={TextVariants.bodyMedium}
-                            color={theme.colors.tertiary}
-                            style={styles.positiveBtnTxt}
-                          >
-                            {props.PositiveText
-                              ? props.PositiveText
-                              : t('Done')}
-                          </CustomText>
-                          {props.loading && <LoadingView />}
-                        </View>
-                      </Tap>
-                    )}
-                  </View>
-                </View>
-              </Tap>
-            </Shadow>
-          </View>
-        </Tap>
-      </Modal>
+          {renderPopup()}
+        </Modal>
+      ) : (
+        // Android: rendered without RN's <Modal> — its native Dialog window
+        // doesn't reliably span the full Activity content (it was leaving
+        // the bottom tab bar and nav bar visible below this popup instead
+        // of dimming/covering them). <Portal> alone teleports this content
+        // to the app root (under PaperProvider, above the navigators) as
+        // plain absolutely-positioned views in the SAME view hierarchy as
+        // the tab bar, so it reliably covers the whole screen. See the same
+        // fix already applied in customBottomPopup.tsx.
+        props.shown && renderPopup()
+      )}
     </Portal>
   );
 }
 
 const makeStyles = (theme: CustomTheme) =>
   StyleSheet.create({
-    content: { flex: 1, padding: 0 },
     container: {
-      backgroundColor: theme.colors.popupBg,
+      flex: 1,
+    },
+    content: {
       flex: 1,
       justifyContent: 'center',
+      alignItems: 'center',
+    },
+    flex: {
+      flex: 1,
     },
     card: {
       borderRadius: theme.roundness,
@@ -207,8 +241,6 @@ const makeStyles = (theme: CustomTheme) =>
       position: 'absolute',
       alignSelf: 'center',
       zIndex: 10,
-      left: 0,
-      right: 0,
       backgroundColor: theme.colors.surface,
     },
     cardCompact: {

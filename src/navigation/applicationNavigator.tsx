@@ -1,3 +1,4 @@
+import { setupNotifications } from '@/services/notificationService';
 import { useAppLanguageStore } from '@/store';
 import { useTheme } from '@/theme/themeProvider/paperTheme';
 import i18n from '@/translations';
@@ -23,6 +24,12 @@ const ApplicationNavigator = () => {
   }, [appLanguage]);
 
   /* Language Selection END */
+
+  /** setup for triggering notification- START */
+  useEffect(() => {
+    setupNotifications();
+  }, []);
+  /** setup for triggering notification- END */
 
   return (
     <GestureHandlerRootView style={styles.main}>

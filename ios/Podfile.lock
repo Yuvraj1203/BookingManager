@@ -2105,6 +2105,11 @@ PODS:
     - Yoga
   - RNInAppBrowser (3.7.1):
     - React-Core
+  - RNNotifee (9.1.8):
+    - React-Core
+    - RNNotifee/NotifeeCore (= 9.1.8)
+  - RNNotifee/NotifeeCore (9.1.8):
+    - React-Core
   - RNReanimated (4.5.3):
     - hermes-engine
     - RCTRequired
@@ -2463,6 +2468,7 @@ DEPENDENCIES:
   - "RNFastImage (from `../node_modules/@d11/react-native-fast-image`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNInAppBrowser (from `../node_modules/react-native-inappbrowser-reborn`)
+  - "RNNotifee (from `../node_modules/@notifee/react-native`)"
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -2665,6 +2671,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNInAppBrowser:
     :path: "../node_modules/react-native-inappbrowser-reborn"
+  RNNotifee:
+    :path: "../node_modules/@notifee/react-native"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -2772,6 +2780,7 @@ SPEC CHECKSUMS:
   RNFastImage: ed8c5d27a3201f9cab374075260de8b97867e2a8
   RNGestureHandler: 25da9acbd3bd8f95bb2043857638b542fe3367f2
   RNInAppBrowser: 904d24dc75e8e6c6c98a3160329192608946f9df
+  RNNotifee: 5e3b271e8ea7456a36eec994085543c9adca9168
   RNReanimated: 3fe70162210eb27e6eb5985a3dce15d056faae8b
   RNScreens: 59f3399f6eec7d61422ed149ec95503dc3da8e74
   RNSVG: ad1539d1b9647a6f7ff9a3a41dc96872f0b7a78c
