@@ -23,7 +23,7 @@ export const AppDrawer = (props: any) => {
   /**for sending to styles custom theme */
   const styles = makeStyle(theme, insets);
   return (
-    <SafeScreen style={styles.main}>
+    <SafeScreen top={true} style={styles.main}>
       <View style={styles.header}>
         <CustomImage
           source={Images.appBanner}

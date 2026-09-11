@@ -23,7 +23,7 @@ const themeDestructure = () => {
   let extraRoundness = 40;
   let lightRoundness = 6;
   let inputRoundness = 12;
-  let bottomBarHeight = isLiquidGlassSupported ? 10 : 90;
+  let bottomBarHeight = isLiquidGlassSupported ? 90 : 90;
   let lightBoxShadow = '0 1px 3px 0 #0000001a, 0 1px 2px -1px #0000001a';
   let darkBoxShadow = '0 1px 3px 0 #FFFFFF1A, 0 1px 2px -1px #FFFFFF14';
   let upperLightShadow = '0 -3px 3px -0.5px #0000001a';

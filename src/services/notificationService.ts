@@ -2,6 +2,7 @@ import notifee, {
   AndroidImportance,
   AuthorizationStatus,
 } from '@notifee/react-native';
+import { Linking, Platform } from 'react-native';
 
 export const requestNotificationPermission = async () => {
   const settings = await notifee.requestPermission();
@@ -12,13 +13,12 @@ export const requestNotificationPermission = async () => {
   );
 };
 
+/**
+ * Only creates the Android notification channel. Does NOT request permission -
+ * the OS only shows the permission dialog once per install, so the actual
+ * request must happen from enableNotifications() on explicit user action.
+ */
 export const setupNotifications = async () => {
-  const allowed = await requestNotificationPermission();
-
-  if (!allowed) {
-    return false;
-  }
-
   await notifee.createChannel({
     id: 'booking-reminders',
     name: 'Booking Reminders',
@@ -26,6 +26,15 @@ export const setupNotifications = async () => {
   });
 
   return true;
+};
+
+export const isNotificationsEnabled = async () => {
+  const settings = await notifee.getNotificationSettings();
+
+  return (
+    settings.authorizationStatus === AuthorizationStatus.AUTHORIZED ||
+    settings.authorizationStatus === AuthorizationStatus.PROVISIONAL
+  );
 };
 
 export const enableNotifications = async () => {
@@ -51,8 +60,12 @@ export const enableNotifications = async () => {
 
   if (!nowAllowed) {
     console.log('Opening notification settings...');
-    // await Linking.openSettings();
-    await notifee.openNotificationSettings();
+    if (Platform.OS === 'ios') {
+      // notifee.openNotificationSettings() is a no-op on iOS.
+      await Linking.openSettings();
+    } else {
+      await notifee.openNotificationSettings();
+    }
     return false;
   }
 

@@ -196,7 +196,7 @@ function CustomAlertPopup({ dismissOnBackPress = true, ...props }: Props) {
       {Platform.OS === 'ios' ? (
         <Modal
           visible={props.shown}
-          transparent={false}
+          transparent={true}
           onRequestClose={() => {
             if (dismissOnBackPress) {
               dimiss();

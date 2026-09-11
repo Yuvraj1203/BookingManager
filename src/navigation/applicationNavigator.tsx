@@ -1,5 +1,8 @@
-import { setupNotifications } from '@/services/notificationService';
-import { useAppLanguageStore } from '@/store';
+import {
+  isNotificationsEnabled,
+  setupNotifications,
+} from '@/services/notificationService';
+import { useAppLanguageStore, useSettingStore } from '@/store';
 import { useTheme } from '@/theme/themeProvider/paperTheme';
 import i18n from '@/translations';
 import { ReturnScreenDataProvider } from '@/utils/navigationUtils';
@@ -27,7 +30,24 @@ const ApplicationNavigator = () => {
 
   /** setup for triggering notification- START */
   useEffect(() => {
-    setupNotifications();
+    const applyNotificationDefaults = async () => {
+      await setupNotifications();
+      const enabled = await isNotificationsEnabled();
+      useSettingStore.getState().initNotificationDefaults(enabled);
+    };
+
+    // wait for persisted settings to load first, so we don't clobber an
+    // already-initialized user preference with the one-time default
+    if (useSettingStore.persist.hasHydrated()) {
+      applyNotificationDefaults();
+      return;
+    }
+
+    const unsubscribe = useSettingStore.persist.onFinishHydration(() => {
+      applyNotificationDefaults();
+    });
+
+    return unsubscribe;
   }, []);
   /** setup for triggering notification- END */
 

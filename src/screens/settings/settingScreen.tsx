@@ -7,10 +7,15 @@ import {
   Shadow,
   TextVariants,
 } from '@/components';
+import { CustomAlertPopup } from '@/components/custom';
 import {
   InputModes,
   InputTextCapitalization,
 } from '@/components/customTextInput/formTextInput';
+import {
+  enableNotifications,
+  isNotificationsEnabled,
+} from '@/services/notificationService';
 import { useSettingStore } from '@/store';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { showSnackbar } from '@/utils/utils';
@@ -49,6 +54,19 @@ export const SettingScreen = () => {
   /** Controls loading status for refreshing data. (FYN-4314)*/
   const [loading, setLoading] = useState(false);
 
+  /** open notification popup for notification services on */
+  const [showNotificationPopup, setShowNotificationPopup] = useState(false);
+
+  /** cached OS permission status, refreshed on focus so the toggle can check
+   * it synchronously instead of awaiting a native bridge call on every flip */
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+
+  /** turn on notification */
+  const turnOnNotification = async () => {
+    const granted = await enableNotifications();
+    setNotificationsEnabled(granted);
+  };
+
   /** currency menu actions */
   const currencyMenuActions: MenuActionWithHandler[] = CURRENCY_OPTIONS.map(
     item => ({
@@ -80,10 +98,12 @@ export const SettingScreen = () => {
     notifyTwoHoursBefore: settingStore.notifyTwoHoursBefore,
   });
 
-  /** reset on focus */
+  /** reset on focus, and refresh cached notification permission status
+   * (it may have changed if the user came back from device settings) */
   useFocusEffect(
     useCallback(() => {
       reset(getDefaultValues());
+      isNotificationsEnabled().then(setNotificationsEnabled);
 
       return () => {};
     }, [
@@ -184,7 +204,16 @@ export const SettingScreen = () => {
               control={control}
               name={'notifyOneDayBefore'}
               render={({ field: { onChange, value } }) => (
-                <Switch value={value} onValueChange={onChange} />
+                <Switch
+                  value={value}
+                  onValueChange={value => {
+                    if (!value || notificationsEnabled) {
+                      onChange(value);
+                    } else {
+                      setShowNotificationPopup(true);
+                    }
+                  }}
+                />
               )}
             />
           </View>
@@ -197,7 +226,16 @@ export const SettingScreen = () => {
               control={control}
               name={'notifyTwoHoursBefore'}
               render={({ field: { onChange, value } }) => (
-                <Switch value={value} onValueChange={onChange} />
+                <Switch
+                  value={value}
+                  onValueChange={value => {
+                    if (!value || notificationsEnabled) {
+                      onChange(value);
+                    } else {
+                      setShowNotificationPopup(true);
+                    }
+                  }}
+                />
               )}
             />
           </View>
@@ -227,6 +265,20 @@ export const SettingScreen = () => {
           {t('DataStoredLocally')}
         </CustomText>
       </ScrollView>
+
+      <CustomAlertPopup
+        title={t('AllowNotification')}
+        msg={t('DeleteBookingMsg')}
+        shown={showNotificationPopup}
+        setShown={setShowNotificationPopup}
+        onNegativePress={() => setShowNotificationPopup(false)}
+        onPositivePress={() => {
+          turnOnNotification();
+          setShowNotificationPopup(false);
+        }}
+        PositiveText={t('Allow')}
+        NegativeText={t('Cancel')}
+      />
     </View>
   );
 };
