@@ -1,7 +1,9 @@
 import { BookingType } from '@/store';
 import i18n from '@/translations';
 import notifee, {
+  AlarmType,
   AndroidImportance,
+  AndroidNotificationSetting,
   AuthorizationStatus,
   TimestampTrigger,
   TriggerType,
@@ -93,6 +95,19 @@ export const enableNotifications = async () => {
   return true;
 };
 
+/** Android 12+ "Alarms & reminders" access - without it reminders can fire up to ~1h late */
+export const canScheduleExactAlarms = async () => {
+  if (Platform.OS !== 'android') {
+    return true;
+  }
+  const settings = await notifee.getNotificationSettings();
+  return settings.android.alarm !== AndroidNotificationSetting.DISABLED;
+};
+
+export const openExactAlarmSettings = async () => {
+  await notifee.openAlarmPermissionSettings();
+};
+
 export const showNotification = async (title: string, body: string) => {
   await notifee.displayNotification({
     title,
@@ -128,6 +143,7 @@ const scheduleReminder = async (
   timestamp: number,
   title: string,
   body: string,
+  alarmType: AlarmType,
 ) => {
   if (timestamp <= Date.now()) {
     return;
@@ -137,7 +153,7 @@ const scheduleReminder = async (
     type: TriggerType.TIMESTAMP,
     timestamp,
     alarmManager: {
-      allowWhileIdle: true,
+      type: alarmType,
     },
   };
 
@@ -186,7 +202,11 @@ export const scheduleBookingReminders = async (
       return;
     }
 
-    if (!(await isNotificationsEnabled())) {
+    const settings = await notifee.getNotificationSettings();
+    if (
+      settings.authorizationStatus !== AuthorizationStatus.AUTHORIZED &&
+      settings.authorizationStatus !== AuthorizationStatus.PROVISIONAL
+    ) {
       return;
     }
 
@@ -196,6 +216,14 @@ export const scheduleBookingReminders = async (
     }
 
     await setupNotifications();
+
+    // Android 14+ denies "Alarms & reminders" by default, and notifee silently drops
+    // exact triggers without it - fall back to an inexact alarm (may fire a few minutes late)
+    const alarmType =
+      Platform.OS === 'android' &&
+      settings.android.alarm === AndroidNotificationSetting.DISABLED
+        ? AlarmType.SET_AND_ALLOW_WHILE_IDLE
+        : AlarmType.SET_EXACT_AND_ALLOW_WHILE_IDLE;
 
     const title = i18n.t('BookingReminderTitle');
     const bodyParams = {
@@ -213,6 +241,7 @@ export const scheduleBookingReminders = async (
         start.getTime() - ONE_DAY_MS,
         title,
         i18n.t('BookingReminderOneDayBody', bodyParams),
+        alarmType,
       );
     }
 
@@ -222,6 +251,7 @@ export const scheduleBookingReminders = async (
         start.getTime() - TWO_HOURS_MS,
         title,
         i18n.t('BookingReminderTwoHoursBody', bodyParams),
+        alarmType,
       );
     }
   } catch (error) {

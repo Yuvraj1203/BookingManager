@@ -50,7 +50,7 @@ export const CustomerCard = ({ cardItem }: CustomerCardProps) => {
   });
 
   const eventTime = formatDate({
-    date: cardItem.date,
+    date: cardItem.time,
     // parseFormat: 'YYYY-MM-DDTHH:mm:ss',
     returnFormat: CardDateTimeEnum.Time,
   });

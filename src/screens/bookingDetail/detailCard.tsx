@@ -38,10 +38,12 @@ const DetailCard = ({ cardItem }: DetailCardProps) => {
   });
 
   const eventTime = formatDate({
-    date: cardItem.date,
+    date: cardItem.time,
     // parseFormat: 'YYYY-MM-DDTHH:mm:ss',
     returnFormat: CardDateTimeEnum.Time,
   });
+
+  console.log('cardItem.time=>', eventTime);
 
   return (
     <Shadow style={styles.main}>

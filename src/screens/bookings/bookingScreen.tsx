@@ -12,14 +12,12 @@ import { useBookingStore } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { useAppNavigation } from '@/utils/navigationUtils';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { FAB } from 'react-native-paper';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 enum FilterKeyEnum {
   All = 'All',
@@ -57,9 +55,6 @@ export const BookingScreen = () => {
 
   /** theme integration in styles */
   const styles = makeStyle(theme);
-
-  /** for edges */
-  const safeAreaInsets = useSafeAreaInsets();
 
   /** for translations */
   const { t } = useTranslation();
@@ -128,9 +123,6 @@ export const BookingScreen = () => {
 
     return sorted;
   }, [bookings, search, selectedFilter, selectedSort]);
-
-  /** height of the bottom tab bar, so scroll content and the FAB clear it */
-  const tabBarHeight = useBottomTabBarHeight();
 
   /** plus icon rendered inside the FAB */
   const fabIcon = ({ size }: { size: number }) => (

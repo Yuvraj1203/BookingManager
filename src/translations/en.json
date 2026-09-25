@@ -76,5 +76,8 @@
   "Allow": "Allow",
   "BookingReminderTitle": "Upcoming booking",
   "BookingReminderOneDayBody": "Tomorrow at {{time}}: {{name}} at {{venue}}",
-  "BookingReminderTwoHoursBody": "In 2 hours ({{time}}): {{name}} at {{venue}}"
+  "BookingReminderTwoHoursBody": "In 2 hours ({{time}}): {{name}} at {{venue}}",
+  "AllowNotificationMsg": "Allow notifications to get reminders before your bookings.",
+  "AllowAlarmsReminders": "Allow alarms & reminders",
+  "AllowAlarmsRemindersMsg": "To get booking reminders exactly on time, allow \"Alarms & reminders\" for this app on the next screen."
 }

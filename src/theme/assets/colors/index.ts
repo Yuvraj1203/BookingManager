@@ -16,14 +16,18 @@ export const Colors = {
     onError: '#FFFFFF',
     errorContainer: '#FFDAD6',
     onErrorContainer: '#410002',
-    background: '#FAFBFD',
-    onBackground: '#1A1C1E',
-    surface: '#FAFBFD',
-    onSurface: '#1A1C1E',
-    surfaceVariant: '#bae3f3',
-    onSurfaceVariant: '#1d4754',
-    outline: '#4b7380',
-    outlineVariant: '#a1cad9',
+    background: '#FAFCFF',
+    onBackground: '#191C1F',
+
+    surface: '#FAFCFF',
+    onSurface: '#191C1F',
+
+    surfaceVariant: '#DEE5EC',
+    onSurfaceVariant: '#424A52',
+
+    outline: '#727A82',
+    outlineVariant: '#C2CAD2',
+
     shadow: '#000000',
     scrim: '#000000',
     inverseSurface: '#2F3033',
@@ -37,9 +41,11 @@ export const Colors = {
       level4: '#bfe9f9',
       level5: '#bae3f3',
     },
-    surfaceDisabled: '#1A1C1E1F',
-    onSurfaceDisabled: '#1A1C1E61',
-    backdrop: '#2D2F3366',
+    surfaceDisabled: '#191C1F1F',
+    onSurfaceDisabled: '#191C1F61',
+    backdrop: '#252D3566',
+
+    lightPrimaryContainer: '#D3E4F525',
   },
 
   dark: {
@@ -59,14 +65,18 @@ export const Colors = {
     onError: '#690005',
     errorContainer: '#93000A',
     onErrorContainer: '#FFDAD6',
-    background: '#0F1316',
-    onBackground: '#E3E6E8',
-    surface: '#0F1316',
-    onSurface: '#E3E6E8',
-    surfaceVariant: '#234c59',
-    onSurfaceVariant: '#a1cad9',
-    outline: '#6c94a2',
-    outlineVariant: '#234c59',
+    background: '#191C1F',
+    onBackground: '#E1E4E8',
+
+    surface: '#191C1F',
+    onSurface: '#E1E4E8',
+
+    surfaceVariant: '#424A52',
+    onSurfaceVariant: '#C2CAD2',
+
+    outline: '#8C949C',
+    outlineVariant: '#424A52',
+
     shadow: '#000000',
     scrim: '#000000',
     inverseSurface: '#E3E6E8',
@@ -80,8 +90,10 @@ export const Colors = {
       level4: '#093744',
       level5: '#15404d',
     },
-    surfaceDisabled: '#E3E6E81F',
-    onSurfaceDisabled: '#E3E6E861',
-    backdrop: '#2D2F3366',
+    surfaceDisabled: '#E1E4E81F',
+    onSurfaceDisabled: '#E1E4E861',
+    backdrop: '#252D3566',
+
+    lightPrimaryContainer: '#D3E4F525',
   },
 };

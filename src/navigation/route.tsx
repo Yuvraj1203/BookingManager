@@ -48,6 +48,7 @@ const RootNavigator = () => {
           // headerLargeTitleEnabled: true,
           headerShown: true,
           title: 'Booking Details',
+          headerBackVisible: false,
         }}
       />
       {/* <RootStack.Screen name="Profile" component={Profile} /> */}

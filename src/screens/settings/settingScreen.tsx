@@ -13,8 +13,10 @@ import {
   InputTextCapitalization,
 } from '@/components/customTextInput/formTextInput';
 import {
+  canScheduleExactAlarms,
   enableNotifications,
   isNotificationsEnabled,
+  openExactAlarmSettings,
   rescheduleAllBookingReminders,
 } from '@/services/notificationService';
 import { useBookingStore, useSettingStore } from '@/store';
@@ -62,10 +64,40 @@ export const SettingScreen = () => {
    * it synchronously instead of awaiting a native bridge call on every flip */
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
+  /** open popup asking for exact alarm access so reminders fire on time */
+  const [showAlarmPopup, setShowAlarmPopup] = useState(false);
+
+  /** asks for "Alarms & reminders" access if it's missing (Android 12+) */
+  const checkExactAlarmAccess = async () => {
+    if (!(await canScheduleExactAlarms())) {
+      setShowAlarmPopup(true);
+    }
+  };
+
   /** turn on notification */
   const turnOnNotification = async () => {
     const granted = await enableNotifications();
     setNotificationsEnabled(granted);
+    if (granted) {
+      checkExactAlarmAccess();
+    }
+  };
+
+  /** reminder toggles need notification permission first, then exact alarm access */
+  const handleReminderToggle = (
+    switchValue: boolean,
+    onChange: (value: boolean) => void,
+  ) => {
+    if (!switchValue) {
+      onChange(false);
+      return;
+    }
+    if (!notificationsEnabled) {
+      setShowNotificationPopup(true);
+      return;
+    }
+    onChange(true);
+    checkExactAlarmAccess();
   };
 
   /** currency menu actions */
@@ -220,13 +252,9 @@ export const SettingScreen = () => {
               render={({ field: { onChange, value } }) => (
                 <Switch
                   value={value}
-                  onValueChange={switchValue => {
-                    if (!switchValue || notificationsEnabled) {
-                      onChange(switchValue);
-                    } else {
-                      setShowNotificationPopup(true);
-                    }
-                  }}
+                  onValueChange={switchValue =>
+                    handleReminderToggle(switchValue, onChange)
+                  }
                 />
               )}
             />
@@ -242,13 +270,9 @@ export const SettingScreen = () => {
               render={({ field: { onChange, value } }) => (
                 <Switch
                   value={value}
-                  onValueChange={switchValue => {
-                    if (!switchValue || notificationsEnabled) {
-                      onChange(switchValue);
-                    } else {
-                      setShowNotificationPopup(true);
-                    }
-                  }}
+                  onValueChange={switchValue =>
+                    handleReminderToggle(switchValue, onChange)
+                  }
                 />
               )}
             />
@@ -282,13 +306,27 @@ export const SettingScreen = () => {
 
       <CustomAlertPopup
         title={t('AllowNotification')}
-        msg={t('DeleteBookingMsg')}
+        msg={t('AllowNotificationMsg')}
         shown={showNotificationPopup}
         setShown={setShowNotificationPopup}
         onNegativePress={() => setShowNotificationPopup(false)}
         onPositivePress={() => {
           turnOnNotification();
           setShowNotificationPopup(false);
+        }}
+        PositiveText={t('Allow')}
+        NegativeText={t('Cancel')}
+      />
+
+      <CustomAlertPopup
+        title={t('AllowAlarmsReminders')}
+        msg={t('AllowAlarmsRemindersMsg')}
+        shown={showAlarmPopup}
+        setShown={setShowAlarmPopup}
+        onNegativePress={() => setShowAlarmPopup(false)}
+        onPositivePress={() => {
+          openExactAlarmSettings();
+          setShowAlarmPopup(false);
         }}
         PositiveText={t('Allow')}
         NegativeText={t('Cancel')}

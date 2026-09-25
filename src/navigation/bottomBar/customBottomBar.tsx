@@ -3,7 +3,7 @@ import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { BlurView } from '@react-native-community/blur';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import React, { useEffect } from 'react';
-import { StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -15,11 +15,7 @@ import { BottomTabButton } from './bottomTabButton';
 
 const EXTRA_LEFT_SPACE = 5;
 
-const CustomBottomBar = ({
-  state,
-  descriptors,
-  navigation,
-}: BottomTabBarProps) => {
+const CustomBottomBar = ({ state, navigation }: BottomTabBarProps) => {
   /** to get the default theme of app */
   const theme = useTheme();
 
@@ -45,6 +41,7 @@ const CustomBottomBar = ({
       withTiming(0.7, { duration: 150 }),
       withTiming(1, { duration: 150 }),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.index, leftSlide]);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -59,6 +56,21 @@ const CustomBottomBar = ({
   return (
     <Shadow style={styles.container}>
       <View style={StyleSheet.absoluteFill}>
+        {/* rendered first so it stays behind the tabs */}
+        <View style={styles.blurClip} pointerEvents="none">
+          {Platform.OS === 'ios' ? (
+            <BlurView
+              style={StyleSheet.absoluteFill}
+              blurType={theme.dark ? 'dark' : 'xlight'}
+              blurAmount={1}
+            />
+          ) : (
+            // Android BlurView (Dimezis) paints the whole window white/blurred,
+            // see margelo/react-native-blur#385 and #595, so use a translucent fill
+            <View style={styles.androidGlass} />
+          )}
+        </View>
+
         <View style={[StyleSheet.absoluteFill, styles.barContainer]}>
           {state.routes.map((route, index) => {
             const isFocused = state.index === index;
@@ -99,14 +111,10 @@ const CustomBottomBar = ({
             },
           ]}
         >
-          <View style={styles.glassOverlayTab}></View>
+          <View style={styles.glassOverlayTab}>
+            <></>
+          </View>
         </Animated.View>
-
-        <BlurView
-          style={[StyleSheet.absoluteFill, styles.wholeBarBlur]}
-          blurType={theme.dark ? 'dark' : 'xlight'}
-          blurAmount={1}
-        />
 
         {/* <View style={styles.glassOverlay}></View> */}
       </View>
@@ -142,9 +150,16 @@ const makeStyle = (theme: CustomTheme) =>
       borderRadius: theme.roundness,
       zIndex: 1,
     },
-    wholeBarBlur: {
+    blurClip: {
       ...StyleSheet.absoluteFill,
       borderRadius: theme.roundness,
+      overflow: 'hidden',
+    },
+    androidGlass: {
+      ...StyleSheet.absoluteFill,
+      backgroundColor: theme.dark
+        ? 'rgba(30, 30, 30, 0.92)'
+        : 'rgba(255, 255, 255, 0.92)',
     },
     glassOverlay: {
       ...StyleSheet.absoluteFill,

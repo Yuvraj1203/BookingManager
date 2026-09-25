@@ -76,5 +76,8 @@
   "Allow": "अनुमति दें",
   "BookingReminderTitle": "आगामी बुकिंग",
   "BookingReminderOneDayBody": "कल {{time}} बजे: {{name}}, {{venue}}",
-  "BookingReminderTwoHoursBody": "2 घंटे में ({{time}}): {{name}}, {{venue}}"
+  "BookingReminderTwoHoursBody": "2 घंटे में ({{time}}): {{name}}, {{venue}}",
+  "AllowNotificationMsg": "बुकिंग से पहले रिमाइंडर पाने के लिए सूचनाओं की अनुमति दें।",
+  "AllowAlarmsReminders": "अलार्म और रिमाइंडर की अनुमति दें",
+  "AllowAlarmsRemindersMsg": "बुकिंग रिमाइंडर ठीक समय पर पाने के लिए, अगली स्क्रीन पर इस ऐप के लिए \"अलार्म और रिमाइंडर\" की अनुमति दें।"
 }
