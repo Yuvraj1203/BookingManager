@@ -15,8 +15,9 @@ import {
 import {
   enableNotifications,
   isNotificationsEnabled,
+  rescheduleAllBookingReminders,
 } from '@/services/notificationService';
-import { useSettingStore } from '@/store';
+import { useBookingStore, useSettingStore } from '@/store';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import { showSnackbar } from '@/utils/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -106,6 +107,7 @@ export const SettingScreen = () => {
       isNotificationsEnabled().then(setNotificationsEnabled);
 
       return () => {};
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
       reset,
       settingStore.businessName,
@@ -127,6 +129,18 @@ export const SettingScreen = () => {
       notifyOneDayBefore: data.notifyOneDayBefore,
       notifyTwoHoursBefore: data.notifyTwoHoursBefore,
     });
+
+    //apply changed reminder toggles to already-saved bookings
+    if (
+      data.notifyOneDayBefore !== settingStore.notifyOneDayBefore ||
+      data.notifyTwoHoursBefore !== settingStore.notifyTwoHoursBefore
+    ) {
+      rescheduleAllBookingReminders(useBookingStore.getState().bookings, {
+        notifyOneDayBefore: data.notifyOneDayBefore,
+        notifyTwoHoursBefore: data.notifyTwoHoursBefore,
+      });
+    }
+
     showSnackbar(t('SettingsSaved'), 'success');
   };
 
@@ -206,9 +220,9 @@ export const SettingScreen = () => {
               render={({ field: { onChange, value } }) => (
                 <Switch
                   value={value}
-                  onValueChange={value => {
-                    if (!value || notificationsEnabled) {
-                      onChange(value);
+                  onValueChange={switchValue => {
+                    if (!switchValue || notificationsEnabled) {
+                      onChange(switchValue);
                     } else {
                       setShowNotificationPopup(true);
                     }
@@ -228,9 +242,9 @@ export const SettingScreen = () => {
               render={({ field: { onChange, value } }) => (
                 <Switch
                   value={value}
-                  onValueChange={value => {
-                    if (!value || notificationsEnabled) {
-                      onChange(value);
+                  onValueChange={switchValue => {
+                    if (!switchValue || notificationsEnabled) {
+                      onChange(switchValue);
                     } else {
                       setShowNotificationPopup(true);
                     }

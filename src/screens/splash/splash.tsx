@@ -1,4 +1,4 @@
-import { CustomImage, ResizeModeType, SafeScreen } from '@/components';
+import { CustomImage, ResizeModeType } from '@/components';
 import { Images } from '@/theme/assets/images';
 import { useAppNavigation } from '@/utils/navigationUtils';
 import { useEffect } from 'react';
@@ -30,21 +30,19 @@ export const SplashScreen = () => {
   });
 
   return (
-    <SafeScreen>
-      <View style={styles.container}>
-        <CustomImage
-          source={Images.appBanner}
-          style={styles.image}
-          resizeMode={ResizeModeType.contain}
-        />
+    <View style={styles.container}>
+      <CustomImage
+        source={Images.appBanner}
+        style={styles.image}
+        resizeMode={ResizeModeType.cover}
+      />
 
-        <CustomImage
-          source={Images.splashLoading}
-          style={styles.splashLoadingGif}
-          //   resizeMode={ResizeModeType.contain}
-        />
-      </View>
-    </SafeScreen>
+      <CustomImage
+        source={Images.splashLoading}
+        style={styles.splashLoadingGif}
+        //   resizeMode={ResizeModeType.contain}
+      />
+    </View>
   );
 };
 
@@ -57,11 +55,13 @@ const makeStyles = () =>
     },
     image: {
       width: width, // Adjust the size as needed
-      height: height * 0.4, // Adjust the size as needed
+      height: height, // Adjust the size as needed
     },
     splashLoadingGif: {
       width: 150,
       height: 150,
       alignSelf: 'center',
+      position: 'absolute',
+      bottom: 70,
     },
   });

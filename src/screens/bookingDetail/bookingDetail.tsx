@@ -6,6 +6,7 @@ import {
   TextVariants,
 } from '@/components';
 import { CustomAlertPopup } from '@/components/custom';
+import { cancelBookingReminders } from '@/services/notificationService';
 import { BookingType, useBookingStore } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
@@ -197,6 +198,7 @@ const BookingDetail = () => {
         onNegativePress={() => setShowDeletePopup(false)}
         onPositivePress={() => {
           bookingStore.deleteBooking(cardItem.id);
+          cancelBookingReminders(cardItem.id);
           navigation.goBack();
         }}
         PositiveText={t('Delete')}

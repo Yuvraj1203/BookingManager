@@ -15,6 +15,7 @@ import { ImageType } from '../customImage/customImage';
 import { CustomText, TextVariants } from '../customText/customText';
 import CustomTextInput from '../customTextInput/customTextInput';
 import { InputVariants } from '../customTextInput/formTextInput';
+import { NextInputOptions } from '../customTextInput/useNextInput';
 import { Tap } from '../tap/tap';
 
 type Props<TFieldValues extends FieldValues> = {
@@ -30,7 +31,7 @@ type Props<TFieldValues extends FieldValues> = {
   textSize?: number;
   maxLength?: number;
   prefixTapStyle?: StyleProp<ImageStyle>;
-};
+} & NextInputOptions;
 
 const CurrencyFormInputBase = <TFieldValues extends FieldValues>(
   {
@@ -115,6 +116,10 @@ const CurrencyFormInputBase = <TFieldValues extends FieldValues>(
             labelVariant={props.labelVariant}
             textSize={props.textSize}
             prefixTapStyle={props.prefixTapStyle}
+            nextRef={props.nextRef}
+            submitBehavior={props.submitBehavior}
+            returnKeyType={props.returnKeyType}
+            onSubmitEditing={props.onSubmitEditing}
           />
 
           {showError && error?.message && (

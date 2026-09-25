@@ -1,8 +1,29 @@
+import { BookingType } from '@/store';
+import i18n from '@/translations';
 import notifee, {
   AndroidImportance,
   AuthorizationStatus,
+  TimestampTrigger,
+  TriggerType,
 } from '@notifee/react-native';
 import { Linking, Platform } from 'react-native';
+
+const CHANNEL_ID = 'booking-reminders';
+
+/** mirrors StatusEnum in addBooking - kept local to avoid a screen <-> service import cycle */
+const INACTIVE_STATUSES = ['Cancelled', 'Completed'];
+
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
+
+export type ReminderPreferences = {
+  notifyOneDayBefore: boolean;
+  notifyTwoHoursBefore: boolean;
+};
+
+/** stable ids so re-scheduling a booking replaces its old reminders */
+const oneDayReminderId = (bookingId: string) => `${bookingId}-1d`;
+const twoHoursReminderId = (bookingId: string) => `${bookingId}-2h`;
 
 export const requestNotificationPermission = async () => {
   const settings = await notifee.requestPermission();
@@ -20,7 +41,7 @@ export const requestNotificationPermission = async () => {
  */
 export const setupNotifications = async () => {
   await notifee.createChannel({
-    id: 'booking-reminders',
+    id: CHANNEL_ID,
     name: 'Booking Reminders',
     importance: AndroidImportance.HIGH,
   });
@@ -77,7 +98,7 @@ export const showNotification = async (title: string, body: string) => {
     title,
     body,
     android: {
-      channelId: 'booking-reminders',
+      channelId: CHANNEL_ID,
       pressAction: {
         id: 'default',
       },
@@ -86,4 +107,134 @@ export const showNotification = async (title: string, body: string) => {
       sound: 'default',
     },
   });
+};
+
+/** booking stores date and time as two separate Date strings - merge them into the event's start */
+const getBookingStart = (booking: BookingType) => {
+  const date = new Date(booking.date);
+  const time = new Date(booking.time);
+
+  if (isNaN(date.getTime()) || isNaN(time.getTime())) {
+    return undefined;
+  }
+
+  date.setHours(time.getHours(), time.getMinutes(), 0, 0);
+  return date;
+};
+
+/** schedules a single self-triggering notification, skipping times already in the past */
+const scheduleReminder = async (
+  id: string,
+  timestamp: number,
+  title: string,
+  body: string,
+) => {
+  if (timestamp <= Date.now()) {
+    return;
+  }
+
+  const trigger: TimestampTrigger = {
+    type: TriggerType.TIMESTAMP,
+    timestamp,
+    alarmManager: {
+      allowWhileIdle: true,
+    },
+  };
+
+  await notifee.createTriggerNotification(
+    {
+      id,
+      title,
+      body,
+      android: {
+        channelId: CHANNEL_ID,
+        pressAction: {
+          id: 'default',
+        },
+      },
+      ios: {
+        sound: 'default',
+      },
+    },
+    trigger,
+  );
+};
+
+export const cancelBookingReminders = async (bookingId: string) => {
+  await notifee.cancelTriggerNotifications([
+    oneDayReminderId(bookingId),
+    twoHoursReminderId(bookingId),
+  ]);
+};
+
+/**
+ * Clears any existing reminders for the booking, then schedules the 1 day / 2 hour
+ * reminders enabled in settings. Safe to call on both add and edit.
+ */
+export const scheduleBookingReminders = async (
+  booking: BookingType,
+  preferences: ReminderPreferences,
+) => {
+  try {
+    await cancelBookingReminders(booking.id);
+
+    if (booking.status && INACTIVE_STATUSES.includes(booking.status)) {
+      return;
+    }
+
+    if (!preferences.notifyOneDayBefore && !preferences.notifyTwoHoursBefore) {
+      return;
+    }
+
+    if (!(await isNotificationsEnabled())) {
+      return;
+    }
+
+    const start = getBookingStart(booking);
+    if (!start) {
+      return;
+    }
+
+    await setupNotifications();
+
+    const title = i18n.t('BookingReminderTitle');
+    const bodyParams = {
+      name: booking.clientName,
+      venue: booking.venue,
+      time: start.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    };
+
+    if (preferences.notifyOneDayBefore) {
+      await scheduleReminder(
+        oneDayReminderId(booking.id),
+        start.getTime() - ONE_DAY_MS,
+        title,
+        i18n.t('BookingReminderOneDayBody', bodyParams),
+      );
+    }
+
+    if (preferences.notifyTwoHoursBefore) {
+      await scheduleReminder(
+        twoHoursReminderId(booking.id),
+        start.getTime() - TWO_HOURS_MS,
+        title,
+        i18n.t('BookingReminderTwoHoursBody', bodyParams),
+      );
+    }
+  } catch (error) {
+    console.log('Failed to schedule booking reminders:', error);
+  }
+};
+
+/** re-applies reminder preferences to every booking, e.g. after the settings toggles change */
+export const rescheduleAllBookingReminders = async (
+  bookings: BookingType[],
+  preferences: ReminderPreferences,
+) => {
+  await Promise.all(
+    bookings.map(booking => scheduleBookingReminders(booking, preferences)),
+  );
 };

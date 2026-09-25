@@ -2,7 +2,6 @@ import { CustomText, Divider, Shadow, TextVariants } from '@/components';
 import { BookingType } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
-import { useAppRoute } from '@/utils/navigationUtils';
 import { formatCurrency, formatDate } from '@/utils/utils';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
@@ -18,7 +17,7 @@ enum CardDateTimeEnum {
 
 const DetailCard = ({ cardItem }: DetailCardProps) => {
   /** for getting the parameter */
-  const param = useAppRoute('BookingDetail').params;
+  // const param = useAppRoute('BookingDetail').params;
 
   /**to get the default theme of app */
   const theme = useTheme();
@@ -120,6 +119,7 @@ const makeStyle = (theme: CustomTheme) =>
     },
     dateAndTime: {
       flexDirection: 'row',
+      flexWrap: 'wrap',
       gap: 7,
     },
     cardFooter: {

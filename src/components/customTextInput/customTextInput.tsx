@@ -40,6 +40,7 @@ import {
   InputTextCapitalization,
   InputVariants,
 } from './formTextInput';
+import { NextInputOptions, useNextInput } from './useNextInput';
 
 type Props = {
   ref?: React.Ref<RNTextInput>;
@@ -81,6 +82,8 @@ type Props = {
   onSubmitEditing?: (
     e: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
   ) => void;
+  nextRef?: NextInputOptions['nextRef'];
+  submitBehavior?: NextInputOptions['submitBehavior'];
   style?: StyleProp<ViewStyle>;
   contentStyle?: StyleProp<TextStyle>;
   outlineStyle?: StyleProp<ViewStyle>;
@@ -171,6 +174,15 @@ const CustomTextInput = forwardRef<RNTextInput, Props>(
       return inputMode ? keyTypeMap[inputMode] || 'default' : 'default';
     }, [inputMode, props.keyboardType]);
 
+    /** return key moves focus to the next input */
+    const nextInputProps = useNextInput({
+      nextRef: props.nextRef,
+      submitBehavior: props.submitBehavior,
+      returnKeyType: props.returnKeyType,
+      onSubmitEditing: props.onSubmitEditing,
+      multiLine,
+    });
+
     // validate text when user type according to specific input mode
     const validateInput = (value: string): boolean => {
       if (!inputMode && !props.inputFormatters) return true;
@@ -253,12 +265,7 @@ const CustomTextInput = forwardRef<RNTextInput, Props>(
             placeholder={props.placeholder}
             secureTextEntry={props.hideText}
             keyboardType={setKeyboard}
-            returnKeyType={
-              props.returnKeyType
-                ? props.returnKeyType
-                : InputReturnKeyType.default
-            }
-            onSubmitEditing={props.onSubmitEditing}
+            {...nextInputProps}
             textAlign={textAlign}
             textAlignVertical="top"
             autoCapitalize={textCapitalization}

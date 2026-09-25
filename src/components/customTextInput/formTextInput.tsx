@@ -24,6 +24,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+import { NextInputOptions, useNextInput } from './useNextInput';
 // CustomImage uses fast-image's stricter ImageStyle (numeric-only), so the
 // optional override here must use the same type to avoid a downstream
 // assignment error when forwarded into CustomImage.
@@ -122,6 +123,8 @@ type Props<TFieldValues extends FieldValues> = {
   loading?: boolean;
   loadingSize?: number;
   onSubmitEditing?: (e: TextInputSubmitEditingEvent) => void;
+  nextRef?: NextInputOptions['nextRef'];
+  submitBehavior?: NextInputOptions['submitBehavior'];
   style?: StyleProp<ViewStyle>;
   contentStyle?: StyleProp<TextStyle>;
   outlineStyle?: StyleProp<ViewStyle>;
@@ -169,6 +172,15 @@ const FormTextInputBase = <TFieldValues extends FieldValues>(
     };
     return inputMode ? keyTypeMap[inputMode] || 'default' : 'default';
   }, [inputMode]);
+
+  /** return key moves focus to the next input */
+  const nextInputProps = useNextInput({
+    nextRef: props.nextRef,
+    submitBehavior: props.submitBehavior,
+    returnKeyType: props.returnKeyType,
+    onSubmitEditing: props.onSubmitEditing,
+    multiLine,
+  });
 
   // validate text when user type according to specific input mode
   const validateInput = (value: string): boolean => {
@@ -288,12 +300,7 @@ const FormTextInputBase = <TFieldValues extends FieldValues>(
               placeholder={props.placeholder}
               secureTextEntry={props.hideText}
               keyboardType={setKeyboard}
-              returnKeyType={
-                props.returnKeyType
-                  ? props.returnKeyType
-                  : InputReturnKeyType.default
-              }
-              onSubmitEditing={props.onSubmitEditing}
+              {...nextInputProps}
               textAlign={textAlign}
               textAlignVertical="top"
               autoCapitalize={textCapitalization}

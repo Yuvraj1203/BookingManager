@@ -15,7 +15,8 @@ import {
 import { CustomDatePickerReturnProp } from '@/components/customDatePicker/customDatePicker';
 import { DatePickerMode } from '@/components/customDatePicker/customDatePicker.types';
 import { InputModes } from '@/components/customTextInput/formTextInput';
-import { EditBookingInput, useBookingStore } from '@/store';
+import { scheduleBookingReminders } from '@/services/notificationService';
+import { EditBookingInput, useBookingStore, useSettingStore } from '@/store';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
 import {
@@ -25,10 +26,16 @@ import {
 } from '@/utils/navigationUtils';
 import { formatCurrency, formatDate } from '@/utils/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  TextInput as RNTextInput,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { ImagePickerResponse } from 'react-native-image-picker';
 import Animated, {
@@ -60,6 +67,12 @@ export enum StatusEnum {
   Cancelled = 'Cancelled',
 }
 
+/** existing bookings store date/time as Date strings - fall back to now for new or unparseable values */
+const parseDateOrNow = (value?: string) => {
+  const parsed = value ? new Date(value) : new Date();
+  return isNaN(parsed.getTime()) ? new Date() : parsed;
+};
+
 export type AddBookingProps = {
   cardItem: EditBookingInput;
 };
@@ -83,6 +96,22 @@ export const AddBooking = () => {
   /** booking store */
   const bookingStore = useBookingStore();
 
+  /** reminder preferences from settings */
+  const notifyOneDayBefore = useSettingStore(state => state.notifyOneDayBefore);
+  const notifyTwoHoursBefore = useSettingStore(
+    state => state.notifyTwoHoursBefore,
+  );
+
+  /** input refs so the keyboard's next key moves through the form */
+  const mobileRef = useRef<RNTextInput>(null);
+  const durationRef = useRef<RNTextInput>(null);
+  const horsesRef = useRef<RNTextInput>(null);
+  const venueRef = useRef<RNTextInput>(null);
+  const addOnsRef = useRef<RNTextInput>(null);
+  const totalAmountRef = useRef<RNTextInput>(null);
+  const advancePaidRef = useRef<RNTextInput>(null);
+  const notesRef = useRef<RNTextInput>(null);
+
   /** image picker state */
   const [showPicker, setShowPicker] = useState(false);
 
@@ -90,8 +119,12 @@ export const AddBooking = () => {
   const [errorMsg, setErrorMsg] = useState<string>();
 
   /** date ad time state */
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [selectedTime, setSelectedTime] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(() =>
+    parseDateOrNow(cardItem?.date),
+  );
+  const [selectedTime, setSelectedTime] = useState<Date>(() =>
+    parseDateOrNow(cardItem?.time),
+  );
 
   /** selected images */
   const [selectedImages, setSelectedImages] = useState<ImagePickerResponse[]>(
@@ -126,8 +159,18 @@ export const AddBooking = () => {
     defaultValues: {
       clientName: cardItem?.clientName ?? '',
       mobile: cardItem?.mobile ?? '',
-      date: cardItem?.date ?? '',
-      time: cardItem?.time ?? '',
+      date: cardItem?.date
+        ? formatDate({
+            date: cardItem.date,
+            returnFormat: DateFormatEnum.ShortMonth,
+          })
+        : '',
+      time: cardItem?.time
+        ? formatDate({
+            date: cardItem.time,
+            returnFormat: DateFormatEnum.HourMinute,
+          })
+        : '',
       duration: cardItem?.duration ?? '',
       horses: cardItem?.horses ?? '',
       venue: cardItem?.venue ?? '',
@@ -260,6 +303,13 @@ export const AddBooking = () => {
     } else {
       bookingResponse = bookingStore.addBooking(payload);
     }
+
+    //schedule the self-triggering 1 day / 2 hour reminders enabled in settings
+    scheduleBookingReminders(bookingResponse, {
+      notifyOneDayBefore,
+      notifyTwoHoursBefore,
+    });
+
     navigation.goBack();
     navigation.navigate('BookingDetail', { cardItem: bookingResponse });
   };
@@ -286,6 +336,7 @@ export const AddBooking = () => {
     }, 3000);
 
     return () => clearTimeout(resetTimeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errorMsg]);
 
   return (
@@ -314,12 +365,15 @@ export const AddBooking = () => {
             <FormTextInput
               control={control}
               name={'clientName'}
+              nextRef={mobileRef}
               placeholder={t('ClientName')}
               label={t('ClientName')}
             />
             <FormTextInput
               control={control}
               name={'mobile'}
+              ref={mobileRef}
+              nextRef={durationRef}
               placeholder={t('Mobile')}
               label={t('Mobile')}
               inputMode={InputModes.phone}
@@ -356,6 +410,8 @@ export const AddBooking = () => {
               <FormTextInput
                 control={control}
                 name={'duration'}
+                ref={durationRef}
+                nextRef={horsesRef}
                 placeholder={t('Duration')}
                 label={t('Duration')}
                 inputMode={InputModes.numeric}
@@ -364,6 +420,8 @@ export const AddBooking = () => {
               <FormTextInput
                 control={control}
                 name={'horses'}
+                ref={horsesRef}
+                nextRef={venueRef}
                 placeholder={t('Horses')}
                 label={t('Horses')}
                 inputMode={InputModes.numeric}
@@ -373,6 +431,8 @@ export const AddBooking = () => {
             <FormTextInput
               control={control}
               name={'venue'}
+              ref={venueRef}
+              nextRef={addOnsRef}
               placeholder={t('Venue')}
               label={t('Venue')}
               style={styles.field}
@@ -380,6 +440,8 @@ export const AddBooking = () => {
             <FormTextInput
               control={control}
               name={'addOns'}
+              ref={addOnsRef}
+              nextRef={totalAmountRef}
               placeholder={t('AddOns')}
               label={t('AddOns')}
               style={styles.field}
@@ -388,6 +450,8 @@ export const AddBooking = () => {
               <CurrencyFormInput
                 control={control}
                 name={'totalAmount'}
+                ref={totalAmountRef}
+                nextRef={advancePaidRef}
                 placeholder={t('TotalAmount')}
                 label={t('TotalAmount')}
                 style={[styles.field, styles.flex]}
@@ -395,6 +459,8 @@ export const AddBooking = () => {
               <CurrencyFormInput
                 control={control}
                 name={'advancePaid'}
+                ref={advancePaidRef}
+                nextRef={notesRef}
                 placeholder={t('AdvancePaid')}
                 label={t('AdvancePaid')}
                 style={[styles.field, styles.flex]}
@@ -420,6 +486,7 @@ export const AddBooking = () => {
             <FormTextInput
               control={control}
               name={'notes'}
+              ref={notesRef}
               placeholder={t('Notes')}
               label={t('Notes')}
               multiLine

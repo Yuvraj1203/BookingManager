@@ -1,101 +1,77 @@
-import {
-  CustomImage,
-  CustomText,
-  ResizeModeType,
-  SafeScreen,
-  TextVariants,
-} from '@/components';
+import { CustomImage, CustomText, TextVariants } from '@/components';
 import { Images } from '@/theme/assets/images';
 import { CustomTheme, useTheme } from '@/theme/themeProvider/paperTheme';
-import {
-  DrawerContentScrollView,
-  DrawerItemList,
-} from '@react-navigation/drawer';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-export const AppDrawer = (props: any) => {
-  /**for getting custom theme */
+export const AppDrawer = () => {
+  const { height, width } = useWindowDimensions();
+
+  /** to get the default theme of app */
   const theme = useTheme();
 
-  const insets = useSafeAreaInsets(); // Handle status/navigation bar safely
+  const insets = useSafeAreaInsets();
 
-  /**for sending to styles custom theme */
-  const styles = makeStyle(theme, insets);
+  /** theme integration in styles */
+  const styles = makeStyle(theme, height, width, insets);
+
   return (
-    <SafeScreen top={true} style={styles.main}>
-      <View style={styles.header}>
-        <CustomImage
-          source={Images.appBanner}
-          color={theme.dark ? theme.colors.onSurfaceVariant : undefined}
-          style={styles.logo}
-          resizeMode={ResizeModeType.contain}
-        />
-      </View>
+    <View style={styles.main}>
+      <CustomImage source={Images.appBanner} style={styles.appbanner} />
 
-      {/* Drawer Items */}
-      <DrawerContentScrollView
-        {...props}
-        contentContainerStyle={styles.drawerContent}
-        style={styles.main}
-      >
-        <DrawerItemList {...props} />
-      </DrawerContentScrollView>
-
-      {/* drawer footer */}
       <View style={styles.bottomLay}>
-        <View style={styles.dot} />
-        <View style={styles.versionLay}>
-          <CustomText variant={TextVariants.labelMedium}>
-            {'Build Version'}
-          </CustomText>
-          <CustomText variant={TextVariants.labelMedium}>
-            {'Version'}
-          </CustomText>
+        <View style={styles.bottomLayInfo}>
+          <View style={styles.dot} />
+          <CustomText
+            allowFontScaling={false}
+            variant={TextVariants.labelMedium}
+          >{`BuildVersion : 0.0.1`}</CustomText>
         </View>
+        <CustomText allowFontScaling={false} variant={TextVariants.labelMedium}>
+          {`Version : 0.0.1`}
+        </CustomText>
       </View>
-    </SafeScreen>
+    </View>
   );
 };
 
 const makeStyle = (
   theme: CustomTheme,
+  height: number,
+  width: number,
   insets: { top: number; bottom: number },
 ) =>
   StyleSheet.create({
     main: {
       flex: 1,
+      justifyContent: 'space-between',
+      backgroundColor: theme.colors.surface,
     },
-    header: {
-      alignItems: 'center',
+    appbanner: {
+      width: '100%',
+      height: height / 1.3,
+      borderBottomEndRadius: 150,
     },
-    logo: {
-      alignSelf: 'center',
-      height: 60,
-      width: 100,
-    },
-    drawerContent: {
-      flex: 1,
-    },
+
     bottomLay: {
       flexDirection: 'row',
       paddingTop: 20,
-      paddingBottom: insets.bottom,
-      paddingHorizontal: 10,
-      alignItems: 'flex-start',
+      paddingBottom: Platform.OS === 'ios' ? insets.bottom : 30,
       borderTopWidth: 0.5,
       borderColor: theme.colors.border,
-      gap: 20,
+      paddingHorizontal: 10,
+      justifyContent: 'space-around',
+    },
+    bottomLayInfo: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      gap: 10,
     },
     dot: {
       height: 5,
       width: 5,
       borderRadius: theme.roundness,
       backgroundColor: theme.colors.completed,
-      marginTop: 7,
-    },
-    versionLay: {
-      //   flexDirection: 'row',
-      //   marginHorizontal: 10,
     },
   });

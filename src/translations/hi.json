@@ -70,5 +70,11 @@
   "PendingPay": "लंबित भुगतान",
   "Amount": "राशि",
   "Name": "नाम",
-  "Keep": "इसे रखें"
+  "DeleteBookingMsg": "क्या आप इस बुकिंग को हटाना चाहते हैं?",
+  "Keep": "इसे रखें",
+  "AllowNotification": "सूचना की अनुमति दें",
+  "Allow": "अनुमति दें",
+  "BookingReminderTitle": "आगामी बुकिंग",
+  "BookingReminderOneDayBody": "कल {{time}} बजे: {{name}}, {{venue}}",
+  "BookingReminderTwoHoursBody": "2 घंटे में ({{time}}): {{name}}, {{venue}}"
 }
